@@ -1,35 +1,26 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-	<script src="libs/reload.js"></script>
-	<script src="libs/jquery3.4.1.js"></script>
-	<script src="libs/jquery.pep.js"></script>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <meta scharset="utf-8">
+  <title>X3D</title>
+  <!-- Scripts -->
+  <script src="libs/reload.js"></script>
+  <script src="libs/jquery3.4.1.js"></script>
+  <script src="libs/jquery.pep.js"></script>
   <script src="libs/three/three.min.js"></script>
   <script src="libs/three/stats.js"></script>
+  <script src="libs/three/fpcontrol.js"></script>
   <script src="game.js"></script>
-  <meta scharset="utf-8">
-  <style>
-    html, body {
-      overflow: hidden;
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      background: #000;
-    }
-    #info {
-      position: absolute;
-      top: 10px;
-      width: 100%;
-      text-align: center;
-      color: white;
-      z-index: 100;
-      display:block;
-    }
-  </style>
 </head>
 <body>
-  <div id="info">Hellowrld</div>
-</body>
+  <div id="target"></div>
+  <div id="helper">
+    <ul type="disc">
+      <li><a href=https://threejsfundamentals.org/threejs/lessons/ru/threejs-primitives.html>Primitives =></a>
+      <li><a href="https://threejsfundamentals.org/threejs/lessons/ru/threejs-scenegraph.html">Scenegraph =></a>
+      </ul>
+    </div>
+  </body>
 </head>
 </html>
