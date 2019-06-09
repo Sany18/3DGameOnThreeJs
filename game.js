@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-  let [scene, camera, renderer, clock, stats] = createScene()
+  let [scene, camera, renderer, stats] = createScene()
 
   let cube = makeCube(0xff00ff, -1)
   let cube1 = makeCube(0xff0000, 1)
@@ -21,8 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
     time *= 0.001
 
     action(time)
-
-    controls.update(clock.getDelta())
 
     if (resizeRendererToDisplaySize(renderer)) {
       const canvas = renderer.domElement;
@@ -54,13 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-  function moveCamera(camera) {
-    if (camera.position.x < 1) {
-      camera.position.x += 0.01
-    } else if (camera.position.x > 1) {
-      camera.position.x -= 0.01
-    }
-  }
 
   function setLight(x, y, z) {
     const light = new THREE.DirectionalLight(0xffffff, 1);
@@ -132,7 +123,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function createScene() {
-    let clock = new THREE.Clock()
     let scene = new THREE.Scene()
     let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000)
     let renderer = new THREE.WebGLRenderer()
@@ -153,10 +143,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.appendChild(stats3.dom)
     stats = [stats, stats2, stats3]
 
-    controls = new THREE.FirstPersonControls(camera);
-    controls.movementSpeed = 1000;
-    controls.lookSpeed = 0.1;
+    controls = new THREE.FirstPersonControls(camera, renderer);
 
-    return [scene, camera, renderer, clock, stats]
+    return [scene, camera, renderer, stats]
   }
 })
