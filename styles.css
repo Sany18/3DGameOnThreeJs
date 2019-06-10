@@ -6,6 +6,12 @@ html, body {
   padding: 0;
   background: #000;
 }
+
+a {
+  text-decoration: none;
+  color: white;
+}
+
 #target {
   position: absolute;
   top: calc(50vh - 1px);
@@ -15,6 +21,7 @@ html, body {
   color: white;
   z-index: 100;
 }
+
 #target:before {
   top: -4px;
   position: absolute;
@@ -23,6 +30,7 @@ html, body {
   width: 2px;
   content: '';
 }
+
 #target:after {
   left: -4px;
   position: absolute;
@@ -31,12 +39,49 @@ html, body {
   width: 10px;
   content: '';     
 }
+
 #helper {
   position: absolute;
   bottom: 0;
   right: 10px;
 }
-a {
-  text-decoration: none;
-  color: white;
+
+#blocker {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+#instructions {
+  width: 100%;
+  height: 100%;
+
+  display: -webkit-box;
+  display: -moz-box;
+  display: box;
+
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  box-orient: horizontal;
+
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  box-pack: center;
+
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  box-align: center;
+
+  color: #ffffff;
+  text-align: center;
+  font-family: Arial;
+  font-size: 14px;
+  line-height: 24px;
+
+  cursor: pointer;
+}
+
+#instructions span {
+  font-size: 35px;
 }

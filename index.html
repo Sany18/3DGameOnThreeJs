@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <link rel="stylesheet" type="text/css" href="styles.css">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
   <meta scharset="utf-8">
   <title>X3D</title>
   <!-- Scripts -->
@@ -10,10 +11,20 @@
   <!-- <script src="libs/jquery.pep.js"></script> -->
   <script src="libs/three/three.min.js"></script>
   <script src="libs/three/stats.js"></script>
-  <script src="libs/three/fpc.js"></script>
+  <!-- <script src="libs/three/fpc.js"></script> -->
+  <script src="libs/three/PointerLockControls.js"></script>
   <script src="game.js"></script>
 </head>
 <body>
+  <div id="blocker">
+    <div id="instructions">
+      <span>Click to play</span><br/>
+      Move: WASD<br/>
+      Jump: SPACE<br/>
+      Look: MOUSE
+    </div>
+  </div>
+
   <div id="target"></div>
   <div id="helper">
     <ul type="disc">
