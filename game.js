@@ -8,11 +8,14 @@ document.addEventListener('DOMContentLoaded', function() {
   let clock = new THREE.Clock()
 
   const state = {
-    height: 50
+    height: 1,
+    r: 0,
+    g: 0,
+    b: 0
   }
 
   let light = new THREE.PointLight(0xffffff, 1, 100)
-  light.position.set(0, 50, 50)
+  light.position.set(0, 1, 50)
   light.castShadow = true
   scene.add(light)
 
@@ -24,12 +27,23 @@ document.addEventListener('DOMContentLoaded', function() {
   var helper = new THREE.CameraHelper(light.shadow.camera)
   scene.add(helper)
 
+  scene.background = new THREE.Color('#000')
+  scene.fog = new THREE.Fog(0x000000, 0, 750)
+
   // http://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage
-  gui.add(state, 'height', 0, 100);
-  // gui.add(state, 'display');
+  var f1 = gui.addFolder('PointLight');
+  f1.add(state, 'height', 0, 100);
+
+  var f2 = gui.addFolder('Background color');
+  f2.add(state, 'r', 0, 9);
+  f2.add(state, 'g', 0, 9);
+  f2.add(state, 'b', 0, 9);
 
   function action() {
     light.position.y = state.height
+    scene.background.r = state.r
+    scene.background.g = state.g
+    scene.background.b = state.b
   }
 
   document.addEventListener('keydown', function(e) {
@@ -119,8 +133,6 @@ document.addEventListener('DOMContentLoaded', function() {
     camera.rotation.y = Math.PI * 1.25
 
     let scene = new THREE.Scene()
-    scene.background = new THREE.Color(0xffffff)
-    scene.fog = new THREE.Fog(0x000000, 0, 750)
 
     let renderer = new THREE.WebGLRenderer({ antialias: true })
     renderer.setPixelRatio(window.devicePixelRatio)
