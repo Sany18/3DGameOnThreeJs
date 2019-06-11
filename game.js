@@ -1,11 +1,36 @@
 document.addEventListener('DOMContentLoaded', function() {
   let [
     stats, controls, renderer, scene, camera,
-    raycaster, objects, velocity, direction,
+    raycaster, objects, velocity, direction, gui,
     moveForward, moveBackward, moveLeft, moveRight, canJump
   ] = initWorld()
 
   let clock = new THREE.Clock()
+
+  const state = {
+    height: 50
+  }
+
+  let light = new THREE.PointLight(0xffffff, 1, 100)
+  light.position.set(0, 50, 50)
+  light.castShadow = true
+  scene.add(light)
+
+  light.shadow.mapSize.width = 512;  // default
+  light.shadow.mapSize.height = 512; // default
+  light.shadow.camera.near = 0.5;    // default
+  light.shadow.camera.far = 500;     // default
+
+  var helper = new THREE.CameraHelper(light.shadow.camera)
+  scene.add(helper)
+
+  // http://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage
+  gui.add(state, 'height', 0, 100);
+  // gui.add(state, 'display');
+
+  function action() {
+    light.position.y = state.height
+  }
 
   document.addEventListener('keydown', function(e) {
     switch (e.keyCode) {
@@ -36,10 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
     renderer.render(scene, camera)
     stats[0].end(); stats[1].end(); stats[2].end()
   }()
-
-  function action() {
-    return
-  }
 
   function control() {
     if (controls.isLocked === true) {
@@ -108,19 +129,6 @@ document.addEventListener('DOMContentLoaded', function() {
     renderer.shadowMap.type = THREE.PCFSoftShadowMap
     document.body.appendChild(renderer.domElement)
 
-    let light = new THREE.DirectionalLight(0xffffff, 1)
-    light.position.set(0, 50, 50)
-    light.castShadow = true
-    scene.add(light)
-
-    light.shadow.mapSize.width = 512;  // default
-    light.shadow.mapSize.height = 512; // default
-    light.shadow.camera.near = 0.5;    // default
-    light.shadow.camera.far = 500;     // default
-
-    var helper = new THREE.CameraHelper(light.shadow.camera)
-    scene.add(helper)
-
     let raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10)
 
     // stats
@@ -137,6 +145,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.appendChild(stats2.dom)
     document.body.appendChild(stats3.dom)
     stats = [stats, stats2, stats3]
+
+    // gui    
+    let gui = new dat.GUI()
+    gui.closed = true
 
     window.addEventListener('resize', onWindowResize, false)
     function onWindowResize() {
@@ -208,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     return [
       stats, controls, renderer, scene, camera,
-      raycaster, objects, velocity, direction,
+      raycaster, objects, velocity, direction, gui,
       moveForward, moveBackward, moveLeft, moveRight, canJump
     ]
   }
@@ -218,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let strs = ['Wake up ', 'alex.t@milestep.io ']
     let substr = ''
     let counter = 0
-    let launchChance = 0.5
+    let launchChance = 0.1
 
     function greeting(factor = Math.random()) {
       if (counter == strs.length) return
