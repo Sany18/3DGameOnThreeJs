@@ -78,6 +78,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function initWorld() {
+    greeting()
+
     let objects = [];
     let moveForward = false;
     let moveBackward = false;
@@ -93,6 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 1, 1000)
     camera.position.y = 10
+    camera.rotation.y = Math.PI * 1.25
 
     let scene = new THREE.Scene()
     scene.background = new THREE.Color(0xffffff)
@@ -195,8 +198,8 @@ document.addEventListener('DOMContentLoaded', function() {
       box.castShadow = true
       box.receiveShadow = false
 
-      box.position.x = Math.floor( Math.random() * 20 ) * 20
-      box.position.z = Math.floor( Math.random() * 20 ) * 20
+      box.position.x = Math.floor( Math.random() * 20 - 10 ) * 20
+      box.position.z = Math.floor( Math.random() * 20 - 10 ) * 20
       box.position.y = 2.5
 
       scene.add(box)
@@ -208,5 +211,25 @@ document.addEventListener('DOMContentLoaded', function() {
       raycaster, objects, velocity, direction,
       moveForward, moveBackward, moveLeft, moveRight, canJump
     ]
+  }
+
+  function greeting() {
+    let terminalWidth = 300
+    let strs = ['Wake up ', 'alex.t@milestep.io ']
+    let substr = ''
+    let counter = 0
+    let launchChance = 0.5
+
+    function greeting(factor = Math.random()) {
+      if (counter == strs.length) return
+      let style = `background: #222; color: #0c0; padding: 5px ${terminalWidth}px 23px 8px; font-size: 15px;`
+      setTimeout(function() {
+        console.clear(); terminalWidth -= 8.4
+        console.log(`%c${substr += strs[counter].charAt(substr.length)}█`, style)
+        if (strs[counter] == substr) {
+          counter++; substr = ''; greeting(5)
+        } else greeting()
+      }, factor * 500)
+    }; if (Math.random() < launchChance) greeting()
   }
 })

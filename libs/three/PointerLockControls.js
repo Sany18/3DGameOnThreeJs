@@ -2,18 +2,18 @@ THREE.PointerLockControls = function (camera, domElement) {
 	this.domElement = domElement || document.body;
 	this.isLocked = false;
 
-	var scope = this;
-	var changeEvent = { type: 'change' };
-	var lockEvent = { type: 'lock' };
-	var unlockEvent = { type: 'unlock' };
-	var euler = new THREE.Euler( 0, 0, 0, 'YXZ' );
-	var PI_2 = Math.PI / 2;
+	let scope = this;
+	let changeEvent = { type: 'change' };
+	let lockEvent = { type: 'lock' };
+	let unlockEvent = { type: 'unlock' };
+	let euler = new THREE.Euler(0, 0, 0, 'YXZ');
+	let PI_2 = Math.PI / 2
 
 	function onMouseMove( event ) {
 		if ( scope.isLocked === false ) return;
 
-		var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
-		var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+		let movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+		let movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 
 		euler.setFromQuaternion(camera.quaternion);
 
@@ -60,7 +60,7 @@ THREE.PointerLockControls = function (camera, domElement) {
 	};
 
 	this.getDirection = function() {
-		var direction = new THREE.Vector3( 0, 0, - 1 );
+		let direction = new THREE.Vector3( 0, 0, - 1 );
 		return function (v) {
 			return v.copy(direction).applyQuaternion(camera.quaternion);
 		};
