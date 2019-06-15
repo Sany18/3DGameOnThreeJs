@@ -8,12 +8,12 @@ document.addEventListener('DOMContentLoaded', function() {
   ] = initWorld()
 
   let light = new THREE.PointLight(0xffffff, 1, 100)
-  light.position.set(0, 5, 50)
+  light.position.set(0, 5, 5)
   light.castShadow = true
   scene.add(light)
 
   let directionLight = new THREE.DirectionalLight(0xffffff, 1)
-  directionLight.position.set(50, 50, 50)
+  directionLight.position.set(0, 50, -50)
   directionLight.castShadow = true
   scene.add(directionLight)
 
@@ -22,11 +22,14 @@ document.addEventListener('DOMContentLoaded', function() {
   light.shadow.camera.near = 0.5;    // default
   light.shadow.camera.far = 500;     // default
 
-  var helper = new THREE.CameraHelper(light.shadow.camera)
-  scene.add(helper)
+  // let helper = new THREE.CameraHelper(directionLight.shadow.camera)
+  // scene.add(helper)
 
-  scene.background = new THREE.Color('#bd00b5')
-  scene.fog = new THREE.Fog(0x000000, 0, 750)
+  // var helper = new THREE.CameraHelper(light.shadow.camera)
+  // scene.add(helper)
+
+  // scene.background = new THREE.Color('#bd00b5')
+  // scene.fog = new THREE.Fog(0x000000, 0, 750)
 
   const state = {
     height: 20

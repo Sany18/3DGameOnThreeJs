@@ -1,6 +1,8 @@
 import PointerLockControls from '../libs/three/PointerLockControls.js'
+import a from './config.js'
 
 let initWorld = function() {
+  let imagePrefix = location.origin + '/game/textures/'
   greeting()
 
   let objects = [];
@@ -9,7 +11,7 @@ let initWorld = function() {
   let vertex = new THREE.Vector3();
   let color = new THREE.Color();
 
-  let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 1, 1000)
+  let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 1, 6000)
   camera.position.y = 10
   camera.rotation.y = Math.PI * 1.25
 
@@ -91,6 +93,21 @@ let initWorld = function() {
   mesh.rotation.x = Math.PI * -.5;
   mesh.receiveShadow = true
   scene.add(mesh)
+
+  //skybox
+  let imageSuffix = ".png"
+   
+  let materialArray = []
+  for (let i = 1; i <= 6; i++)
+    materialArray.push(new THREE.MeshBasicMaterial({
+      map: THREE.ImageUtils.loadTexture(imagePrefix + 'skybox/' + i + imageSuffix),
+      side: THREE.BackSide
+  }))
+
+  let skyGeometry = new THREE.CubeGeometry(5000, 5000, 5000)
+  let skyMaterial = new THREE.MeshFaceMaterial(materialArray)
+  let skyBox = new THREE.Mesh(skyGeometry, skyMaterial)
+  scene.add(skyBox)
 
   // objects
   // let boxGeometry = new THREE.BoxBufferGeometry(20, 50, 20)
