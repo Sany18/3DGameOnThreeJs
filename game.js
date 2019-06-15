@@ -1,23 +1,29 @@
+import PointerLockControls from './libs/three/PointerLockControls.js'
+
 document.addEventListener('DOMContentLoaded', function() {
   let [
     stats, controls, renderer, scene, camera,
-    raycaster, objects, velocity, direction, gui,
-    moveForward, moveBackward, moveLeft, moveRight, canJump
+    raycaster, objects, velocity, direction, gui
   ] = initWorld()
 
   let clock = new THREE.Clock()
 
   const state = {
-    height: 1,
-    r: 0,
-    g: 0,
+    height: 20,
+    r: 2,
+    g: 2,
     b: 0
   }
 
   let light = new THREE.PointLight(0xffffff, 1, 100)
-  light.position.set(0, 1, 50)
+  light.position.set(0, 5, 50)
   light.castShadow = true
   scene.add(light)
+
+  let directionLight = new THREE.DirectionalLight(0xffffff, 1)
+  directionLight.position.set(50, 50, 50)
+  directionLight.castShadow = true
+  scene.add(directionLight)
 
   light.shadow.mapSize.width = 512;  // default
   light.shadow.mapSize.height = 512; // default
@@ -46,81 +52,21 @@ document.addEventListener('DOMContentLoaded', function() {
     scene.background.b = state.b
   }
 
-  document.addEventListener('keydown', function(e) {
-    switch (e.keyCode) {
-      case 38: case 87: moveForward = true; break; // forward
-      case 37: case 65: moveLeft = true; break; // left
-      case 40: case 83: moveBackward = true; break; // back
-      case 39: case 68: moveRight = true; break; //right
-      case 32: if (canJump == true) {velocity.y += 350}; canJump = false; break;
-    }
-  }, false)
-
-  document.addEventListener('keyup', function(e) {
-    switch (e.keyCode) {
-      case 38: case 87: moveForward = false; break; // forward
-      case 37: case 65: moveLeft = false; break; // left
-      case 40: case 83: moveBackward = false; break; // back
-      case 39: case 68: moveRight = false; break; //right
-    }
-  }, false)
-
   !function animate() {
     stats[0].begin(); stats[1].begin(); stats[2].begin()
     requestAnimationFrame(animate)
 
     action()
-    control()
+    controls.control(raycaster, velocity, direction, clock, objects) 
 
     renderer.render(scene, camera)
     stats[0].end(); stats[1].end(); stats[2].end()
   }()
 
-  function control() {
-    if (controls.isLocked === true) {
-      raycaster.ray.origin.copy(controls.getObject().position)
-      raycaster.ray.origin.y -= 10
-
-      let intersections = raycaster.intersectObjects(objects)
-      let onObject = intersections.length > 0
-      let delta = clock.getDelta()
-
-      velocity.x -= velocity.x * 10.0 * delta
-      velocity.z -= velocity.z * 10.0 * delta
-      velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
-
-      direction.z = Number(moveForward) - Number(moveBackward)
-      direction.x = Number(moveLeft) - Number(moveRight)
-      direction.normalize(); // this ensures consistent movements in all directions
-
-      if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta
-      if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta
-      if (onObject === true) {
-        velocity.y = Math.max( 0, velocity.y )
-        canJump = true;
-      }
-
-      controls.getObject().translateX(velocity.x * delta)
-      controls.getObject().position.y += (velocity.y * delta) // new behavior
-      controls.getObject().translateZ(velocity.z * delta)
-
-      if (controls.getObject().position.y < 10) {
-        velocity.y = 0
-        controls.getObject().position.y = 10
-        canJump = true
-      }
-    }
-  }
-
   function initWorld() {
     greeting()
 
     let objects = [];
-    let moveForward = false;
-    let moveBackward = false;
-    let moveLeft = false;
-    let moveRight = false;
-    let canJump = false;
 
     let prevTime = performance.now();
     let velocity = new THREE.Vector3();
@@ -169,25 +115,11 @@ document.addEventListener('DOMContentLoaded', function() {
       renderer.setSize(window.innerWidth, window.innerHeight)
     }
 
-    let controls = new THREE.PointerLockControls(camera)
+    let controls = new PointerLockControls(camera)
     scene.add(controls.getObject())
 
     let blocker = document.getElementById('blocker')
     let instructions = document.getElementById('instructions')
-
-    instructions.addEventListener('click', function() {
-      controls.lock()
-    }, false)
-
-    controls.addEventListener('lock', function() {
-      instructions.style.display = 'none'
-      blocker.style.display = 'none'
-    })
-
-    controls.addEventListener('unlock', function() {
-      blocker.style.display = 'block'
-      instructions.style.display = ''
-    })
 
     // floor
     const loader = new THREE.TextureLoader()
@@ -214,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
     scene.add(mesh)
 
     // objects
-    let boxGeometry = new THREE.BoxBufferGeometry(5, 5, 5)
+    let boxGeometry = new THREE.BoxBufferGeometry(20, 50, 20)
     let boxMaterial = new THREE.MeshPhongMaterial({ color: 0xcc0002 })
 
     for (let i = 0; i < 50; i++) {
@@ -232,8 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     return [
       stats, controls, renderer, scene, camera,
-      raycaster, objects, velocity, direction, gui,
-      moveForward, moveBackward, moveLeft, moveRight, canJump
+      raycaster, objects, velocity, direction, gui
     ]
   }
 
@@ -242,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let strs = ['Wake up ', 'alex.t@milestep.io ']
     let substr = ''
     let counter = 0
-    let launchChance = 0.1
+    let launchChance = 0.01
 
     function greeting(factor = Math.random()) {
       if (counter == strs.length) return
