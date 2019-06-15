@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+export default document.addEventListener("DOMContentLoaded", function () {
   var headers = { "Etag": 1, "Last-Modified": 1, "Content-Length": 1, "Content-Type": 1 },
   resources = {},
   pendingRequests = {},
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // add rule for morphing between old and new css files
       var head = document.getElementsByTagName("head")[0],
       style = document.createElement("style"),
-      rule = "transition: all .3s ease-out;"
+      rule = "transition: all .3s ease-out;",
       css = [".livejs-loading * { ", rule, " -webkit-", rule, "-moz-", rule, "-o-", rule, "}"].join('');
       style.setAttribute("type", "text/css");
       head.appendChild(style);

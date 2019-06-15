@@ -3,53 +3,58 @@ export default class PointerLockControls {
 		this.camera = camera
 		this.euler = new THREE.Euler(0, 0, 0, 'YXZ')
 		this.domElem = domElem
+		this.clock = new THREE.Clock()
+    this.velocity = new THREE.Vector3()
+    this.direction = new THREE.Vector3()
+    this.raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10)
 
 		this.onMouseMove = this.onMouseMove.bind(this)
-		this.keydown = this.keydown.bind(this)
-		this.keyup = this.keyup.bind(this)
 
 		this.connect()
 	}
 
-	PI_2 = Math.PI / 2
+	moveSpeed = 400.0
+	yourMass = 100.0
+	gravity = 9.8
+	jumpHeight = 25
+
+	PI_2 = Math.PI/2
 	moveForward = false
 	moveBackward = false
 	moveLeft = false
 	moveRight = false
 	canJump = false
-	velocity = ''
 
-	control(raycaster, velocity, direction, clock, objects) {
-		this.velocity = velocity
+	control(objects) {
     if (document.pointerLockElement) {
-      raycaster.ray.origin.copy(this.getObject().position)
-      raycaster.ray.origin.y -= 10
+      this.raycaster.ray.origin.copy(this.getObject().position)
+      this.raycaster.ray.origin.y -= 10
 
-      let intersections = raycaster.intersectObjects(objects)
+      let intersections = this.raycaster.intersectObjects(objects)
       let onObject = intersections.length > 0
-      let delta = clock.getDelta()
+      let delta = this.clock.getDelta()
 
-      velocity.x -= velocity.x * 10.0 * delta
-      velocity.z -= velocity.z * 10.0 * delta
-      velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+      this.velocity.x -= this.velocity.x * 10.0 * delta
+      this.velocity.z -= this.velocity.z * 10.0 * delta
+      this.velocity.y -= this.gravity * this.yourMass * delta
 
-      direction.z = Number(this.moveForward) - Number(this.moveBackward)
-      direction.x = Number(this.moveLeft) - Number(this.moveRight)
-      direction.normalize(); // this ensures consistent movements in all directions
+      this.direction.z = Number(this.moveForward) - Number(this.moveBackward)
+      this.direction.x = Number(this.moveLeft) - Number(this.moveRight)
+      this.direction.normalize() // this ensures consistent movements in all directions
 
-      if (this.moveForward || this.moveBackward) velocity.z -= direction.z * 400.0 * delta
-      if (this.moveLeft || this.moveRight) velocity.x -= direction.x * 400.0 * delta
+      if (this.moveForward || this.moveBackward) this.velocity.z -= this.direction.z * this.moveSpeed * delta
+      if (this.moveLeft || this.moveRight) this.velocity.x -= this.direction.x * this.moveSpeed * delta
       if (onObject === true) {
-        velocity.y = Math.max( 0, velocity.y )
-        this.canJump = true;
+        this.velocity.y = Math.max(0, this.velocity.y)
+        this.canJump = true
       }
 
-      this.getObject().translateX(velocity.x * delta)
-      this.getObject().position.y += (velocity.y * delta) // new behavior
-      this.getObject().translateZ(velocity.z * delta)
+      this.getObject().translateX(this.velocity.x * delta)
+      this.getObject().position.y += (this.velocity.y * delta) // new behavior
+      this.getObject().translateZ(this.velocity.z * delta)
 
       if (this.getObject().position.y < 10) {
-        velocity.y = 0
+        this.velocity.y = 0
         this.getObject().position.y = 10
         this.canJump = true
       }
@@ -57,17 +62,17 @@ export default class PointerLockControls {
   }
 
 	onMouseMove(event) {
-		if (!document.pointerLockElement) return;
+		if (!document.pointerLockElement) return
 
-		let movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
-		let movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+		let movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0
+		let movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0
 
-		this.euler.setFromQuaternion(this.camera.quaternion);
+		this.euler.setFromQuaternion(this.camera.quaternion)
 
-		this.euler.y -= movementX * 0.002;
-		this.euler.x -= movementY * 0.002;
+		this.euler.y -= movementX * 0.002
+		this.euler.x -= movementY * 0.002
 
-		this.euler.x = Math.max(-this.PI_2, Math.min(this.PI_2, this.euler.x));
+		this.euler.x = Math.max(-this.PI_2, Math.min(this.PI_2, this.euler.x))
 
 		this.camera.quaternion.setFromEuler(this.euler)
 	}
@@ -78,7 +83,7 @@ export default class PointerLockControls {
       case 37: case 65: this.moveLeft = true; break; // left
       case 40: case 83: this.moveBackward = true; break; // back
       case 39: case 68: this.moveRight = true; break; //right
-      case 32: if (this.canJump == true) {this.velocity.y += 350}; this.canJump = false; break;
+      case 32: if (this.canJump == true) {this.velocity.y += this.jumpHeight * 10}; this.canJump = false; break;
     }
 	}
 
@@ -91,34 +96,40 @@ export default class PointerLockControls {
     }
 	}
 
+	blocker = () => {
+    document.pointerLockElement ?
+      document.exitPointerLock() :
+      document.body.requestPointerLock()
+	}
+
+	pointerlockchange = () => {
+    if (document.pointerLockElement) {
+      blocker.style.display = 'none'
+      instructions.style.display = 'none'
+    } else {
+      blocker.style.display = 'block'
+      instructions.style.display = ''
+    } 
+	}
+
 	connect = () => {
-		document.addEventListener('mousemove', this.onMouseMove, false);
-		document.addEventListener('pointerlockchange', this.nPointerlockChange, false);
-		document.addEventListener('pointerlockerror', this.onPointerlockError, false);
+		document.addEventListener('mousemove', this.onMouseMove, false)
+		document.addEventListener('pointerlockchange', this.nPointerlockChange, false)
+		document.addEventListener('pointerlockerror', this.onPointerlockError, false)
 		document.addEventListener('keydown', (e) => this.keydown(e), false)
 		document.addEventListener('keyup', (e) => this.keyup(e), false)
-
-		document.getElementById('blocker').addEventListener('click', function() {
-      document.pointerLockElement ?
-        document.exitPointerLock() :
-        document.body.requestPointerLock()
-    }, false)
-
-    document.addEventListener('pointerlockchange', function(e){
-      if (document.pointerLockElement) {
-        blocker.style.display = 'none'
-        instructions.style.display = 'none'
-      } else {
-        blocker.style.display = 'block'
-        instructions.style.display = ''
-      } 
-    })
+    document.addEventListener('pointerlockchange', this.pointerlockchange)
+		document.getElementById('blocker').addEventListener('click', this.blocker, false)
 	}
 
 	disconnect = () => {
-		document.removeEventListener('mousemove', this.onMouseMove, false);
-		document.removeEventListener('pointerlockchange', this.nPointerlockChange, false);
-		document.removeEventListener('pointerlockerror', this.onPointerlockError, false);
+		document.removeEventListener('mousemove', this.onMouseMove, false)
+		document.removeEventListener('pointerlockchange', this.nPointerlockChange, false)
+		document.removeEventListener('pointerlockerror', this.onPointerlockError, false)
+		document.removeEventListener('keydown', (e) => this.keydown(e), false)
+		document.removeEventListener('keyup', (e) => this.keyup(e), false)
+    document.removeEventListener('pointerlockchange', this.pointerlockchange)
+		document.getElementById('blocker').removeEventListener('click', this.blocker, false)
 	}
 
 	getObject = () => {
@@ -126,7 +137,7 @@ export default class PointerLockControls {
 	}
 
 	getDirection = () => {
-		direction = new THREE.Vector3( 0, 0, - 1 );
+		let direction = new THREE.Vector3(0, 0, -1)
 		return (v) => {
 			return v.copy(direction).applyQuaternion(camera.quaternion)
 		}
