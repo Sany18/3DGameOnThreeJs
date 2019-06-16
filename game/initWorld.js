@@ -1,21 +1,13 @@
 import PointerLockControls from '../libs/three/PointerLockControls.js'
-import a from './config.js'
 
 let initWorld = function() {
-  let imagePrefix = location.origin + '/game/textures/'
-  greeting()
-
-  let objects = [];
-
-  let prevTime = performance.now();
-  let vertex = new THREE.Vector3();
-  let color = new THREE.Color();
-
   let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 1, 6000)
   camera.position.y = 10
   camera.rotation.y = Math.PI * 1.25
 
   let scene = new THREE.Scene()
+
+  let objects = []
 
   let renderer = new THREE.WebGLRenderer({ antialias: true })
   renderer.setPixelRatio(window.devicePixelRatio)
@@ -57,23 +49,8 @@ let initWorld = function() {
   let instructions = document.getElementById('instructions')
 
   // floor
-  const loader = new THREE.TextureLoader()
-  const planeSize = 100
-
-  // const texture = loader.load('textures/floorSquere.png')
-
-  const texture = loader.load(
-    location.origin + '/game/textures/floorSquere.png',
-    function (texture) {
-      var material = new THREE.MeshBasicMaterial({ map: texture })
-    },
-    function (xhr) {
-      console.log((xhr.loaded / xhr.total * 100) + '% loaded')
-    },
-    function (xhr) {
-      console.log('An error happened');
-    }
-  )
+  const planeSize = 500
+  const texture = THREE.globalFunctions.loadBasicTexture('floorSquere.png')
 
   texture.wrapS = THREE.RepeatWrapping
   texture.wrapT = THREE.RepeatWrapping
@@ -81,26 +58,22 @@ let initWorld = function() {
   const repeats = planeSize/2
   texture.repeat.set(repeats, repeats)
 
-  const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize);
+  const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize)
   const planeMat = new THREE.MeshPhongMaterial({
     map: texture,
-    side: THREE.DoubleSide,
   })
 
-  planeMat.color.setRGB(1.5, 1.5, 1.5)
   const mesh = new THREE.Mesh(planeGeo, planeMat)
-  mesh.scale.set(10,10,10)
-  mesh.rotation.x = Math.PI * -.5;
+  mesh.scale.set(10, 10, 10)
+  mesh.rotation.x = Math.PI * -.5
   mesh.receiveShadow = true
   scene.add(mesh)
 
   //skybox
-  let imageSuffix = ".png"
-   
   let materialArray = []
   for (let i = 1; i <= 6; i++)
     materialArray.push(new THREE.MeshBasicMaterial({
-      map: THREE.ImageUtils.loadTexture(imagePrefix + 'skybox/' + i + imageSuffix),
+      map: THREE.globalFunctions.loadBasicTexture('skybox/' + i + '.png'),
       side: THREE.BackSide
   }))
 
@@ -109,22 +82,22 @@ let initWorld = function() {
   let skyBox = new THREE.Mesh(skyGeometry, skyMaterial)
   scene.add(skyBox)
 
-  // objects
-  // let boxGeometry = new THREE.BoxBufferGeometry(20, 50, 20)
-  // let boxMaterial = new THREE.MeshPhongMaterial({ color: 0xcc0002 })
+  objects
+  let boxGeometry = new THREE.BoxBufferGeometry(20, 50, 20)
+  let boxMaterial = new THREE.MeshPhongMaterial({ color: 0xcc0002, wireframe: true })
 
-  // for (let i = 0; i < 50; i++) {
-  //   let box = new THREE.Mesh(boxGeometry, boxMaterial)
-  //   box.castShadow = true
-  //   box.receiveShadow = false
+  for (let i = 0; i < 50; i++) {
+    let box = new THREE.Mesh(boxGeometry, boxMaterial)
+    box.castShadow = true
+    box.receiveShadow = false
 
-  //   box.position.x = Math.floor(Math.random() * 20 - 10) * 20
-  //   box.position.z = Math.floor(Math.random() * 20 - 10) * 20
-  //   box.position.y = 2.5
+    box.position.x = Math.floor(Math.random() * 20 - 10) * 20
+    box.position.z = Math.floor(Math.random() * 20 - 10) * 20
+    box.position.y = 25
 
-  //   scene.add(box)
-  //   objects.push(box)
-  // }
+    scene.add(box)
+    objects.push(box)
+  }
 
   return [
     stats, controls, renderer, scene, camera,
@@ -132,7 +105,7 @@ let initWorld = function() {
   ]
 }
 
-function greeting() {
+!function greeting() {
   let terminalWidth = 300
   let strs = ['Wake up ', 'alex.t@milestep.io ']
   let substr = ''
@@ -150,6 +123,6 @@ function greeting() {
       } else greeting()
     }, factor * 500)
   }; if (Math.random() < launchChance) greeting()
-}
+}()
 
 export default initWorld

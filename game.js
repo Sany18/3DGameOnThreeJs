@@ -1,4 +1,6 @@
 import './libs/reload.js'
+import './game/config.js'
+import './game/globalFunctions.js'
 import initWorld from './game/initWorld.js'
 
 document.addEventListener('DOMContentLoaded', function() {

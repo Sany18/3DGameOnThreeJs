@@ -13,11 +13,6 @@ export default class PointerLockControls {
 		this.connect()
 	}
 
-	moveSpeed = 400.0
-	yourMass = 100.0
-	gravity = 9.8
-	jumpHeight = 25
-
 	PI_2 = Math.PI/2
 	moveForward = false
 	moveBackward = false
@@ -36,14 +31,14 @@ export default class PointerLockControls {
 
       this.velocity.x -= this.velocity.x * 10.0 * delta
       this.velocity.z -= this.velocity.z * 10.0 * delta
-      this.velocity.y -= this.gravity * this.yourMass * delta
+      this.velocity.y -= window.config.gravity * window.config.yourMass * delta
 
       this.direction.z = Number(this.moveForward) - Number(this.moveBackward)
       this.direction.x = Number(this.moveLeft) - Number(this.moveRight)
       this.direction.normalize() // this ensures consistent movements in all directions
 
-      if (this.moveForward || this.moveBackward) this.velocity.z -= this.direction.z * this.moveSpeed * delta
-      if (this.moveLeft || this.moveRight) this.velocity.x -= this.direction.x * this.moveSpeed * delta
+      if (this.moveForward || this.moveBackward) this.velocity.z -= this.direction.z * window.config.moveSpeed * delta
+      if (this.moveLeft || this.moveRight) this.velocity.x -= this.direction.x * window.config.moveSpeed * delta
       if (onObject === true) {
         this.velocity.y = Math.max(0, this.velocity.y)
         this.canJump = true
@@ -83,7 +78,7 @@ export default class PointerLockControls {
       case 37: case 65: this.moveLeft = true; break; // left
       case 40: case 83: this.moveBackward = true; break; // back
       case 39: case 68: this.moveRight = true; break; //right
-      case 32: if (this.canJump == true) {this.velocity.y += this.jumpHeight * 10}; this.canJump = false; break;
+      case 32: if (this.canJump == true) {this.velocity.y += window.config.jumpHeight * 10}; this.canJump = false; break;
     }
 	}
 
