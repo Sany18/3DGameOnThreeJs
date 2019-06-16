@@ -1,6 +1,7 @@
 import './libs/reload.js'
 import './game/config.js'
 import './game/globalFunctions.js'
+import './game/other.js'
 import initWorld from './game/initWorld.js'
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -39,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // }()
 
   // scene.background = new THREE.Color('#bd00b5')
-  // scene.fog = new THREE.Fog(0xffffff, 0, 800)
+  // scene.fog = new THREE.Fog(0xffffff, 100, 800)
 
   const state = {
     height: 20
@@ -48,15 +49,19 @@ document.addEventListener('DOMContentLoaded', function() {
   var f1 = gui.addFolder('PointLight');
   f1.add(state, 'height', 0, 100);
 
-  function action() {
+  function action(time) {
     // light.position.y = state.height
+
+    // objects.forEach((obj) => {
+    //   obj.rotation.y = time/1000
+    // })
   }
 
-  !function animate() {
+  !function animate(time) {
     stats.start()
     requestAnimationFrame(animate)
 
-    action()
+    action(time)
     controls.control(objects)
 
     renderer.render(scene, camera)

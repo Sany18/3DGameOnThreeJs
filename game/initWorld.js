@@ -47,14 +47,13 @@ let initWorld = function() {
 
     light.target.position.set(0, 0, 0)
 
-    if (window.config.enableShadows) {
-      light.castShadow = true
-    }
+    light.castShadow = window.config.enableShadows
 
-    light.shadow.camera.left = -200
-    light.shadow.camera.right = 200
-    light.shadow.camera.top = 200
-    light.shadow.camera.bottom = -200
+    let lightBoxSize = 250
+    light.shadow.camera.left = -lightBoxSize
+    light.shadow.camera.right = lightBoxSize
+    light.shadow.camera.top = lightBoxSize
+    light.shadow.camera.bottom = -lightBoxSize
     light.shadow.mapSize.width = window.config.shadowResolution
     light.shadow.mapSize.height = window.config.shadowResolution
 
@@ -125,7 +124,7 @@ let initWorld = function() {
     const mesh = new THREE.Mesh(planeGeo, planeMat)
     mesh.receiveShadow = true
     mesh.scale.set(10, 10, 10)
-    mesh.rotation.x = Math.PI * -.5
+    mesh.rotation.x = Math.PI*-.5
 
     scene.add(mesh)
   }()
@@ -142,6 +141,7 @@ let initWorld = function() {
     let skyGeometry = new THREE.CubeGeometry(1000, 1000, 1000)
     let skyMaterial = new THREE.MeshFaceMaterial(materialArray)
     let skyBox = new THREE.Mesh(skyGeometry, skyMaterial)
+    skyBox.rotation.y = Math.PI*0.75
     camera.add(skyBox)
     return skyBox
   }()

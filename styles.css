@@ -40,12 +40,6 @@ a {
   content: '';     
 }
 
-#helper {
-  position: absolute;
-  bottom: 0;
-  right: 10px;
-}
-
 #blocker {
   position: absolute;
   width: 100%;
@@ -84,4 +78,30 @@ a {
 
 #instructions span {
   font-size: 35px;
+}
+
+#console {
+  position: absolute;
+  height: 40vh;
+  width: 100%;
+  top: -40vh;
+  background: rgba(50, 50, 50, 0.8);
+  color: white;
+  display: flex;
+  flex-direction: column-reverse;
+  transition: 0.3s;
+}
+
+#console input {
+  width: 100%;
+  background: none;
+  border: none;
+  width: 100%;
+  outline: none;
+  color: white;
+  background: rgba(100, 100, 100, 0.8)
+}
+
+.visible {
+  top: 0vh !important;
 }

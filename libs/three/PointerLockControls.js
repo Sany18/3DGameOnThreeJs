@@ -37,8 +37,11 @@ export default class PointerLockControls {
       this.direction.x = Number(this.moveLeft) - Number(this.moveRight)
       this.direction.normalize() // this ensures consistent movements in all directions
 
-      if (this.moveForward || this.moveBackward) this.velocity.z -= this.direction.z * window.config.moveSpeed * delta
-      if (this.moveLeft || this.moveRight) this.velocity.x -= this.direction.x * window.config.moveSpeed * delta
+      if (this.moveForward || this.moveBackward) this.velocity.z -= this.direction.z 
+        * window.config.moveSpeed * 10 * delta
+      if (this.moveLeft || this.moveRight) this.velocity.x -= this.direction.x
+        * window.config.moveSpeed * 10 * delta
+      
       if (onObject === true) {
         this.velocity.y = Math.max(0, this.velocity.y)
         this.canJump = true
@@ -54,7 +57,6 @@ export default class PointerLockControls {
         this.canJump = true
       }
     }
-    return this.velocity
   }
 
   onMouseMove(event) {
@@ -106,7 +108,7 @@ export default class PointerLockControls {
     } else {
       blocker.style.display = 'block'
       instructions.style.display = ''
-    } 
+    }
   }
 
   connect = () => {
