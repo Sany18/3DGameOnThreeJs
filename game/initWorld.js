@@ -10,7 +10,7 @@ let initWorld = function() {
 
   //camera
   let camera = function() {
-    let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 1, 6000)
+    let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 1, 1000)
     camera.position.y = 10
     camera.rotation.y = Math.PI * 1.25
     return camera
@@ -106,13 +106,6 @@ let initWorld = function() {
     document.getElementById('instructions')
   }()
 
-  //camera control
-  let controls = function() {
-    let controls = new PointerLockControls(camera)
-    scene.add(controls.getObject())
-    return controls
-  }()
-
   // floor
   !function floor() {
     const planeSize = 500
@@ -138,7 +131,7 @@ let initWorld = function() {
   }()
 
   //skybox
-  !function skybox() {
+  let skyBox = function() {
     let materialArray = []
     for (let i = 1; i <= 6; i++)
       materialArray.push(new THREE.MeshBasicMaterial({
@@ -146,17 +139,24 @@ let initWorld = function() {
         side: THREE.BackSide
     }))
 
-    let skyGeometry = new THREE.CubeGeometry(5000, 5000, 5000)
+    let skyGeometry = new THREE.CubeGeometry(1000, 1000, 1000)
     let skyMaterial = new THREE.MeshFaceMaterial(materialArray)
     let skyBox = new THREE.Mesh(skyGeometry, skyMaterial)
-    skyBox.position.y = 250
-    scene.add(skyBox)
+    camera.add(skyBox)
+    return skyBox
+  }()
+
+  //camera control
+  let controls = function() {
+    let controls = new PointerLockControls(camera, skyBox)
+    scene.add(controls.getObject())
+    return controls
   }()
 
   //vars for actions
   return [
     stats, controls, renderer, scene, camera,
-    objects, gui
+    objects, gui, skyBox
   ]
 }
 

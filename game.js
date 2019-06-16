@@ -6,7 +6,7 @@ import initWorld from './game/initWorld.js'
 document.addEventListener('DOMContentLoaded', function() {
   let [
     stats, controls, renderer, scene, camera,
-    objects, gui
+    objects, gui, skyBox
   ] = initWorld()
 
   //objects
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // }()
 
   // scene.background = new THREE.Color('#bd00b5')
-  // scene.fog = new THREE.Fog(0x000000, 0, 750)
+  // scene.fog = new THREE.Fog(0xffffff, 0, 800)
 
   const state = {
     height: 20
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
     requestAnimationFrame(animate)
 
     action()
-    controls.control(objects) 
+    controls.control(objects)
 
     renderer.render(scene, camera)
     stats.end()
