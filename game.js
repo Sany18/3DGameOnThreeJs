@@ -1,13 +1,16 @@
 import './libs/reload.js'
+import './libs/ammo.js'
 import './game/config.js'
-import './game/globalFunctions.js'
 import './game/other.js'
+import './game/globalFunctions.js'
 import initWorld from './game/initWorld.js'
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', main)
+
+function main() {
   let [
     stats, controls, renderer, scene, camera,
-    objects, gui, skyBox
+    objects, gui, skyBox, light
   ] = initWorld()
 
   //objects
@@ -42,14 +45,24 @@ document.addEventListener('DOMContentLoaded', function() {
   // scene.background = new THREE.Color('#bd00b5')
   // scene.fog = new THREE.Fog(0xffffff, 100, 800)
 
+  // http://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage
   const state = {
     height: 20
   }
-  // http://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage
-  var f1 = gui.addFolder('PointLight');
-  f1.add(state, 'height', 0, 100);
+
+  // var f1 = gui.addFolder('PointLight');
+  // f1.add(state, 'height', 0, 100);
+
+  //axes
+  if (window.config.showAxes) objects.forEach((node) => {
+    const axes = new THREE.AxesHelper()
+    axes.material.depthTest = false
+    axes.renderOrder = 1
+    node.add(axes)
+  })
 
   function action(time) {
+    // THREE.globalFunctions.checkVars()
     // light.position.y = state.height
 
     // objects.forEach((obj) => {
@@ -67,4 +80,4 @@ document.addEventListener('DOMContentLoaded', function() {
     renderer.render(scene, camera)
     stats.end()
   }()
-})
+}

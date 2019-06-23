@@ -18,7 +18,7 @@
 			addText(' - show help: help')
 			addText(' - clear console: clear')
 			addText('<br>set property:')
-			addText(' - gravity 9.8 <br>')
+			addText(' - gravity 9.8 <br>&ensp;')
 		},
 		config: () => {
 			addText('<br>')
@@ -33,9 +33,12 @@
 			let arr = value.split(' ')
 
 			if (arr[0] in window.config) {
+				if (arr[1] == 'true') arr[1] = true
+				if (arr[1] == 'false') arr[1] = false
+
 				window.config[arr[0]] = arr[1]
-				addText('assigned ' + value)
-				value = ''
+				addText('assigned ' + value); value = ''
+				THREE.globalFunctions.onChangeProperties(arr[0])
 			} else {
 				addText('command not found')
 			}
@@ -43,15 +46,15 @@
 	}
 
 	addText('Custom console v0.0.2')
-	commands.help()
+	// commands.help()
 
-	// !function () {
-	// 	let log = console.log
-	// 	console.log = function(msg) {
-	// 		addText(msg)
-	// 		log.call(this, ...arguments)
-	// 	}
-	// }()
+	!function () {
+		let log = console.log
+		console.log = function(msg) {
+			addText(msg)
+			log.call(this, ...arguments)
+		}
+	}()
 
 	document.addEventListener('keydown', function(e) {
 		if (e.keyCode == 192) {
@@ -79,3 +82,10 @@
 		}
 	})
 }()
+
+// add fileSize property to Number
+Object.defineProperty(Number.prototype,'fileSize',{value:function(a,b,c,d){
+ return (a=a?[1e3,'k','B']:[1024,'K','iB'],b=Math,c=b.log,
+ d=c(this)/c(a[0])|0,this/b.pow(a[0],d)).toFixed(2)
+ +' '+(d?(a[1]+'MGTPEZY')[--d]+a[2]:'Bytes');
+},writable:false,enumerable:false})

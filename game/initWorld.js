@@ -4,7 +4,7 @@ let initWorld = function() {
   let scene = new THREE.Scene()
   let objects = []
 
-  // gui
+  //gui
   let gui = new dat.GUI()
   gui.closed = true
 
@@ -60,15 +60,17 @@ let initWorld = function() {
     scene.add(light)
     scene.add(backLight)
 
+    let helper = new THREE.CameraHelper(light.shadow.camera)
+    helper.name = 'directionLightHelper'
+
     if (window.config.debug) {
-      let helper = new THREE.CameraHelper(light.shadow.camera)
       scene.add(helper)
     }
 
     return light
   }()
 
-  // stats
+  //stats
   let stats = { start: () => {}, end: () => {} }
 
   if (window.config.debug) {
@@ -105,7 +107,7 @@ let initWorld = function() {
     document.getElementById('instructions')
   }()
 
-  // floor
+  //floor
   !function floor() {
     const planeSize = 500
     const texture = THREE.globalFunctions.loadBasicTexture('floorSquere.png')
@@ -153,28 +155,59 @@ let initWorld = function() {
     return controls
   }()
 
+  //change static properties (from console)
+  THREE.globalFunctions.onChangeProperties = (propertyName) => {
+    directionLight.shadow.mapSize.width = window.config.shadowResolution
+    directionLight.shadow.mapSize.height = window.config.shadowResolution
+    directionLight.castShadow = window.config.enableShadows
+
+    //debug: helper
+    if (window.config.debug && !scene.getObjectByName('directionLightHelper')) {
+      let helper = new THREE.CameraHelper(directionLight.shadow.camera)
+      helper.name = 'directionLightHelper'
+      scene.add(helper)
+    } else if (!window.config.debug) {
+      scene.remove(scene.getObjectByName('directionLightHelper'))
+    }
+  }
+
   //vars for actions
   return [
     stats, controls, renderer, scene, camera,
-    objects, gui, skyBox
+    objects, gui, skyBox, directionLight
   ]
 }
 
 !function greeting() {
-  let terminalWidth = 300
+  let terminalWidth = 250
+  let terminalWidthDefault = terminalWidth || 250
   let strs = ['Wake up ', 'alex.t@milestep.io ']
   let substr = ''
   let counter = 0
   let launchChance = 0.01
+  let cursorTime = 500
+  let cursor = () => ((new Date().getTime()/cursorTime)%2 > 1 ? '█' : ' ')
+
+  function finish(style) {
+    let timerId = setInterval(function() {
+      console.clear();
+      console.log(`%c${substr}${cursor()}`, style)
+    }, cursorTime)
+
+    setTimeout(function() {clearInterval(timerId)}, 15000)
+  }
 
   function greeting(factor = Math.random()) {
-    if (counter == strs.length) return
-    let style = `background: #222; color: #0c0; padding: 5px ${terminalWidth}px 23px 8px; font-size: 15px;`
     setTimeout(function() {
+      let style = `background: #222; color: #0c0; padding: 5px ${terminalWidth}px 23px 8px; font-size: 15px;`
       console.clear(); terminalWidth -= 8.4
-      console.log(`%c${substr += strs[counter].charAt(substr.length)}█`, style)
+      console.log(`%c${substr += strs[counter].charAt(substr.length)}${cursor()}`, style)
       if (strs[counter] == substr) {
-        counter++; substr = ''; greeting(5)
+        counter++;
+        if (counter != strs.length) {
+          substr = '' ; greeting(5);
+          terminalWidth = terminalWidthDefault;
+        } else {finish(style)};
       } else greeting()
     }, factor * 500)
   }; if (Math.random() < launchChance) greeting()
