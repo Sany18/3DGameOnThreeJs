@@ -63,7 +63,7 @@ let initWorld = function() {
     let helper = new THREE.CameraHelper(light.shadow.camera)
     helper.name = 'directionLightHelper'
 
-    if (window.config.debug) {
+    if (window.config.debug && window.config.helperLight) {
       scene.add(helper)
     }
 

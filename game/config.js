@@ -6,8 +6,9 @@ window.config = {
 	gravity: 9.8,
 	jumpHeight: 25,
 
-	debug: false,
+	debug: true,
 	enableShadows: true,
 	showAxes: false,
-	showTesturesSize: true
+	showTesturesSize: true,
+	helperLight: false
 }
