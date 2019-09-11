@@ -1,17 +1,25 @@
+// gui:8, camera:13, renderer:23
+// directionLight:44 stats:77 listeners:93
+// floor:106 skybox:131 controls:148
+// onChangeProperties:156 return:172
 import PointerLockControls from '../libs/three/PointerLockControls.js'
 
 let initWorld = function() {
   let scene = new THREE.Scene()
   let objects = []
+  let clock = new THREE.Clock()
 
   //gui
-  let gui = new dat.GUI()
-  gui.closed = true
+  let gui
+  // let gui = new dat.GUI()
+  // gui.closed = true
 
   //camera
   let camera = function() {
     let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 1, 1000)
     camera.position.y = 10
+    camera.position.z = -20
+    camera.position.x = -20
     camera.rotation.y = Math.PI * 1.25
     return camera
   }()
@@ -19,7 +27,7 @@ let initWorld = function() {
   //renderer
   let renderer = function() {
     let renderer = new THREE.WebGLRenderer({ antialias: true })
-    renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.setPixelRatio(window.devicePixelRatio * window.config.resolutionMultiplier)
     renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.shadowMap.enabled = true
     renderer.shadowMapSoft = true
@@ -76,20 +84,12 @@ let initWorld = function() {
   if (window.config.debug) {
     stats = function() {
       let stats = new Stats()
-      let stats2 = new Stats()
-      let stats3 = new Stats()
       stats.showPanel(0)
-      stats2.showPanel(1)
-      stats3.showPanel(2)
       stats.dom.style.cssText = 'position:absolute;bottom:0px;left:0px;'
-      stats2.dom.style.cssText = 'position:absolute;bottom:0px;left:80px;'
-      stats3.dom.style.cssText = 'position:absolute;bottom:0px;left:160px;'
       document.body.appendChild(stats.dom)
-      document.body.appendChild(stats2.dom)
-      document.body.appendChild(stats3.dom)
 
-      function start() {stats.begin(); stats2.begin(); stats3.begin()}
-      function end() {stats.end(); stats2.end(); stats3.end()}
+      function start() {stats.begin()}
+      function end() {stats.end()}
       return {start, end}
     }()
   }
@@ -172,45 +172,11 @@ let initWorld = function() {
   }
 
   //vars for actions
-  return [
+  return {
     stats, controls, renderer, scene, camera,
-    objects, gui, skyBox, directionLight
-  ]
-}
-
-!function greeting() {
-  let terminalWidth = 250
-  let terminalWidthDefault = terminalWidth || 250
-  let strs = ['Wake up ', 'alex.t@milestep.io ']
-  let substr = ''
-  let counter = 0
-  let launchChance = 0.01
-  let cursorTime = 500
-  let cursor = () => ((new Date().getTime()/cursorTime)%2 > 1 ? '█' : ' ')
-
-  function finish(style) {
-    let timerId = setInterval(function() {
-      console.clear();
-      console.log(`%c${substr}${cursor()}`, style)
-    }, cursorTime)
-
-    setTimeout(function() {clearInterval(timerId)}, 15000)
+    objects, gui, skyBox, light: directionLight, clock,
+    tmpTrans: "", physicsWorld: [], rigidBodies: []
   }
-
-  function greeting(factor = Math.random()) {
-    setTimeout(function() {
-      let style = `background: #222; color: #0c0; padding: 5px ${terminalWidth}px 23px 8px; font-size: 15px;`
-      console.clear(); terminalWidth -= 8.4
-      console.log(`%c${substr += strs[counter].charAt(substr.length)}${cursor()}`, style)
-      if (strs[counter] == substr) {
-        counter++;
-        if (counter != strs.length) {
-          substr = '' ; greeting(5);
-          terminalWidth = terminalWidthDefault;
-        } else {finish(style)};
-      } else greeting()
-    }, factor * 500)
-  }; if (Math.random() < launchChance) greeting()
-}()
+}
 
 export default initWorld

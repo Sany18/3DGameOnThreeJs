@@ -2,85 +2,39 @@
 // getEventListeners($(‘selector’))
 // console.table(variableName)
 
-!function customConsole() {
-	let customConsole = document.getElementById('console')
-	let customConsoleText = document.getElementById('console_text')
-	let customConsoleInput = document.getElementById('console_input')
+!function greeting() {
+  let terminalWidth = 250
+  let terminalWidthDefault = terminalWidth || 250
+  let strs = ['Wake up ', 'alex.t@milestep.io ']
+  let substr = ''
+  let counter = 0
+  let launchChance = 0.01
+  let cursorTime = 500
+  let cursor = () => ((new Date().getTime()/cursorTime)%2 > 1 ? '█' : ' ')
 
-	let addText = function(msg) {
-		customConsoleText.innerHTML += '<br>' + msg
-	}
+  function finish(style) {
+    let timerId = setInterval(function() {
+      console.clear();
+      console.log(`%c${substr}${cursor()}`, style)
+    }, cursorTime)
 
-	let commands = {
-		help: () => {
-			addText('<br>help:')
-			addText(' - show config: config')
-			addText(' - show help: help')
-			addText(' - clear console: clear')
-			addText('<br>set property:')
-			addText(' - gravity 9.8 <br>&ensp;')
-		},
-		config: () => {
-			addText('<br>')
-			for (var key in window.config) {
-				addText(key + ': ' + window.config[key])
-			}
-		},
-		clear: () => {
-			customConsoleText.innerHTML = ''
-		},
-		setConfig: (value) => {
-			let arr = value.split(' ')
+    setTimeout(function() {clearInterval(timerId)}, 15000)
+  }
 
-			if (arr[0] in window.config) {
-				if (arr[1] == 'true') arr[1] = true
-				if (arr[1] == 'false') arr[1] = false
-
-				window.config[arr[0]] = arr[1]
-				addText('assigned ' + value); value = ''
-				THREE.globalFunctions.onChangeProperties(arr[0])
-			} else {
-				addText('command not found')
-			}
-		}
-	}
-
-	addText('Custom console v0.0.2')
-	// commands.help()
-
-	!function () {
-		let log = console.log
-		console.log = function(msg) {
-			addText(msg)
-			log.call(this, ...arguments)
-		}
-	}()
-
-	document.addEventListener('keydown', function(e) {
-		if (e.keyCode == 192) {
-			if (document.pointerLockElement) {
-				customConsole.classList.add('visible')
-				document.exitPointerLock()
-				customConsoleInput.select()
-			} else {
-				customConsole.classList.remove('visible')
-				document.body.requestPointerLock()
-			}
-		}
-	}, false)
-
-	customConsoleInput.addEventListener('keypress', function(e) {
-		if (e.keyCode == 13) {
-			e.preventDefault()
-
-			switch(e.target.value) {
-				case 'help': commands.help(); break;
-				case 'config': commands.config(); break;
-				case 'clear': commands.clear(); break;
-				default: commands.setConfig(e.target.value); break;
-			}
-		}
-	})
+  function greeting(factor = Math.random()) {
+    setTimeout(function() {
+      let style = `background: #222; color: #0c0; padding: 5px ${terminalWidth}px 23px 8px; font-size: 15px;`
+      console.clear(); terminalWidth -= 8.4
+      console.log(`%c${substr += strs[counter].charAt(substr.length)}${cursor()}`, style)
+      if (strs[counter] == substr) {
+        counter++;
+        if (counter != strs.length) {
+          substr = '' ; greeting(5);
+          terminalWidth = terminalWidthDefault;
+        } else {finish(style)};
+      } else greeting()
+    }, factor * 500)
+  }; if (Math.random() < launchChance) greeting()
 }()
 
 // add fileSize property to Number

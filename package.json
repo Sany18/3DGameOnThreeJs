@@ -1,0 +1,34 @@
+{
+  "name": "andor_game",
+  "version": "1.0.0",
+  "description": "three js\\bullet",
+  "main": "index.html",
+  "scripts": {
+    "test": "test",
+    "start": "node index.js && start http://localhost:6020"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Sany18/3DGame.git"
+  },
+  "keywords": [
+    "tree.js",
+    "bullet",
+    "physics",
+    "3D",
+    "game",
+    "AndorGame",
+    "Hoxz",
+    "AlexT."
+  ],
+  "author": "Alex T.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sany18/3DGame/issues"
+  },
+  "homepage": "https://github.com/Sany18/3DGame#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "ws": "^7.1.2"
+  }
+}
