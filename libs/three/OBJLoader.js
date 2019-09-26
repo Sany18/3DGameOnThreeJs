@@ -44,7 +44,7 @@ THREE.OBJLoader.prototype = {
 
         var scope = this;
 
-        var loader = new THREE.XHRLoader(scope.manager);
+        var loader = new THREE.FileLoader(scope.manager);
         loader.setPath(this.path);
         loader.load(url, function(text) {
 
@@ -406,8 +406,6 @@ THREE.OBJLoader.prototype = {
 
     parse: function(text) {
 
-        console.time('OBJLoader');
-
         var state = this._createParserState();
 
         if (text.indexOf('\r\n') !== -1) {
@@ -673,7 +671,7 @@ THREE.OBJLoader.prototype = {
 
                 }
 
-                material.shading = sourceMaterial.smooth ? THREE.SmoothShading : THREE.FlatShading;
+                material.flatShading  = sourceMaterial.smooth ? THREE.SmoothShading : THREE.FlatShading;
 
                 createdMaterials.push(material);
 
@@ -705,8 +703,6 @@ THREE.OBJLoader.prototype = {
             container.add(mesh);
 
         }
-
-        console.timeEnd('OBJLoader');
 
         return container;
 

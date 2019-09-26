@@ -1,4 +1,3 @@
-// client
 let ws = new WebSocket(window.config.API_WS)
 window.send = ws.send.bind(ws)
 

@@ -1,18 +1,10 @@
-// gui:8, camera:13, renderer:23
-// directionLight:44 stats:77 listeners:93
-// floor:106 skybox:131 controls:148
-// onChangeProperties:156 return:172
 import PointerLockControls from '../libs/three/PointerLockControls.js'
+import { DirectionLight, Floor, Skybox, DemoAmmo } from './prefabs/index.js'
 
 let initWorld = function() {
   let scene = new THREE.Scene()
   let objects = []
   let clock = new THREE.Clock()
-
-  //gui
-  let gui
-  // let gui = new dat.GUI()
-  // gui.closed = true
 
   //camera
   let camera = function() {
@@ -45,39 +37,6 @@ let initWorld = function() {
     return renderer
   }()
 
-  //direction light
-  let directionLight = function() {
-    let light = new THREE.DirectionalLight(0xffffff, 0.7)
-    let backLight = new THREE.DirectionalLight(0xffffff, 0.3)
-
-    light.position.set(50, 200, -200)
-    backLight.position.set(-50, 200, 200)
-
-    light.target.position.set(0, 0, 0)
-
-    light.castShadow = window.config.enableShadows
-
-    let lightBoxSize = 250
-    light.shadow.camera.left = -lightBoxSize
-    light.shadow.camera.right = lightBoxSize
-    light.shadow.camera.top = lightBoxSize
-    light.shadow.camera.bottom = -lightBoxSize
-    light.shadow.mapSize.width = window.config.shadowResolution
-    light.shadow.mapSize.height = window.config.shadowResolution
-
-    scene.add(light)
-    scene.add(backLight)
-
-    let helper = new THREE.CameraHelper(light.shadow.camera)
-    helper.name = 'directionLightHelper'
-
-    if (window.config.debug && window.config.helperLight) {
-      scene.add(helper)
-    }
-
-    return light
-  }()
-
   //stats
   let stats = { start: () => {}, end: () => {} }
 
@@ -107,46 +66,9 @@ let initWorld = function() {
     document.getElementById('instructions')
   }()
 
-  //floor
-  !function floor() {
-    const planeSize = 500
-    const texture = THREE.globalFunctions.loadBasicTexture('floorSquere.png')
-
-    texture.wrapS = THREE.RepeatWrapping
-    texture.wrapT = THREE.RepeatWrapping
-    texture.magFilter = THREE.NearestFilter
-    const repeats = planeSize/2
-    texture.repeat.set(repeats, repeats)
-
-    const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize)
-    const planeMat = new THREE.MeshPhongMaterial({
-      map: texture,
-    })
-
-    const mesh = new THREE.Mesh(planeGeo, planeMat)
-    mesh.receiveShadow = true
-    mesh.scale.set(10, 10, 10)
-    mesh.rotation.x = Math.PI*-.5
-
-    scene.add(mesh)
-  }()
-
-  //skybox
-  let skyBox = function() {
-    let materialArray = []
-    for (let i = 1; i <= 6; i++)
-      materialArray.push(new THREE.MeshBasicMaterial({
-        map: THREE.globalFunctions.loadBasicTexture('skybox/' + i + '.png'),
-        side: THREE.BackSide
-    }))
-
-    let skyGeometry = new THREE.CubeGeometry(1000, 1000, 1000)
-    let skyMaterial = new THREE.MeshFaceMaterial(materialArray)
-    let skyBox = new THREE.Mesh(skyGeometry, skyMaterial)
-    skyBox.rotation.y = Math.PI*0.75
-    camera.add(skyBox)
-    return skyBox
-  }()
+  let directionLight = DirectionLight(scene)
+  Floor(scene)
+  let skyBox = Skybox(scene, camera)
 
   //camera control
   let controls = function() {
@@ -171,11 +93,51 @@ let initWorld = function() {
     }
   }
 
-  //vars for actions
+
+  let physicsWorld = []
+  let rigidBodies = []
+  let tmpTrans = ""
+
+  let setupPhysicsWorld = () => {
+    let { gravity } = window.config;
+    let collisionConfiguration  = new Ammo.btDefaultCollisionConfiguration(),
+        dispatcher              = new Ammo.btCollisionDispatcher(collisionConfiguration),
+        overlappingPairCache    = new Ammo.btDbvtBroadphase(),
+        solver                  = new Ammo.btSequentialImpulseConstraintSolver();
+
+    physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+    physicsWorld.setGravity(new Ammo.btVector3(0, -gravity, 0));
+  }
+
+  let updatePhysics = (deltaTime) => {
+    physicsWorld.stepSimulation(deltaTime, 10)
+
+    for (let i = 0; i < rigidBodies.length; i++) {
+      let objThree = rigidBodies[i];
+      let objAmmo = objThree.userData.physicsBody;
+      let ms = objAmmo.getMotionState();
+      if (ms) {
+        ms.getWorldTransform(tmpTrans);
+        let p = tmpTrans.getOrigin();
+        let q = tmpTrans.getRotation();
+        objThree.position.set(p.x(), p.y(), p.z());
+        objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
+      }
+    }
+  }
+
+  Ammo().then(() => {
+    tmpTrans = new Ammo.btTransform();
+    setupPhysicsWorld();
+
+    // physics objecst
+    // DemoAmmo(scene, physicsWorld, rigidBodies)
+  })
+
   return {
     stats, controls, renderer, scene, camera,
-    objects, gui, skyBox, light: directionLight, clock,
-    tmpTrans: "", physicsWorld: [], rigidBodies: []
+    objects, skyBox, light: directionLight, clock,
+    tmpTrans, physicsWorld, rigidBodies, updatePhysics
   }
 }
 
