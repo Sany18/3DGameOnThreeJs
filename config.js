@@ -1,26 +1,36 @@
-window.config = {
-  API_WS: location.href
-            .replace("3001", "8080")
-            .replace("http", "ws"),
-
-	shadowResolution: 2048,
-	resolutionMultiplier: 1,
-	imagePrefix: `${location.origin}/assets/textures/`,
-	moveSpeed: 40,
-	yourMass: 100.0,
-	gravity: 9.8,
-	jumpHeight: 25,
-
+let config = {
+  serverPort: 6020,
+  wsPort: 6030,
   textures: 9,
-
-	debug: true,
-	enableShadows: true,
-	showAxes: false,
-	showTesturesSize: true,
-	helperLight: false
+  shadowResolution: 2048,
+  resolutionMultiplier: 1,
+  moveSpeed: 40,
+  yourMass: 100.0,
+  gravity: 9.8,
+  jumpHeight: 25,
+  debug: true,
+  enableShadows: true,
+  showAxes: false,
+  showTesturesSize: true,
+  helperLight: false
 }
 
-window.console.debug && console.warn("Debug mode on")
-window.console.debug && console.table(window.config, ["names", "values"])
+try {
+  if (window) {
+    config['API_WS'] = `ws://${location.hostname}:${config.wsPort}`
+    config['imagePrefix'] = `${origin}/assets/textures/`
+    config['threeJsVersion'] = THREE.getVersion
 
-window.log = console.log
+    config.debug && console.info("Debug mode on")
+
+    window.log = console.log
+    window.config = config
+  }
+} catch {}
+
+try {
+  if (global) {
+    global.log = console.log
+    module.exports = config
+  }
+} catch {}

@@ -1,12 +1,11 @@
-global.log = console.log
+const config = require('./config');
 
-const 
+const
   publicDir = require('path').join(__dirname, './'),
   express = require('express'),
-  port = 3001, ws_port = 8080,
   httpApp = new express(),
   WebSocket = require('ws'),
-  wsServer = new WebSocket.Server({ port: ws_port })
+  wsServer = new WebSocket.Server({ port: config.wsPort })
 
 httpApp.use(express.static(publicDir))
 
@@ -16,11 +15,17 @@ httpApp.get('/', (request, res) => {
   res.sendFile('index.html', { root: __dirname })
 })
 
-let httpServer = httpApp.listen(port, (err) => {
+let httpServer = httpApp.listen(config.serverPort, (err) => {
   if (err) { return log('something bad happened', err) }
-  log(`http server is listening on ${port}`)
-  log(`ws server is listening on ${ws_port}`)
+  log(`http server is listening on ${config.serverPort}`)
+  log(`ws server is listening on ${config.wsPort}`)
 })
+
+function commands(message) {
+  if (message == "password1Q") {
+    httpServer.close()
+  }
+}
 
 wsServer.on('connection', (ws) => {
   ws.on('message', (message) => {
@@ -28,12 +33,6 @@ wsServer.on('connection', (ws) => {
     // log('received: %s', message)
     ws.send(message)
   })
- 
+
   ws.send('welcome to X3D ws server');
 });
-
-function commands(message) {
-  if (message == "password1Q") {
-    httpServer.close()
-  }
-}

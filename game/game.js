@@ -5,6 +5,7 @@ import './other.js'
 import './console.js'
 import './wsChat.js'
 import '../libs/reload.js'
+import '../libs/three/OBJLoader.js'
 
 document.addEventListener('DOMContentLoaded', main)
 
@@ -194,28 +195,57 @@ function main() {
   })
 
 
-  // weapon and bullets
+
+
+
+
+
+
+
+
+  // weapon
+  new THREE.OBJLoader()
+    .load(config.imagePrefix + 'pistol/Cerberus.obj', (weapon) => {
+    var material = new THREE.MeshStandardMaterial();
+    var loader = new THREE.TextureLoader().setPath(config.imagePrefix + 'pistol/');
+
+    material.roughness = 1; // attenuates roughnessMap
+    material.metalness = 1; // attenuates metalnessMap
+
+    material.map = loader.load('Cerberus_A.jpg');
+    material.metalnessMap = material.roughnessMap = loader.load('Cerberus_RM.jpg');
+    material.normalMap = loader.load('Cerberus_N.jpg');
+
+    material.map.wrapS = THREE.RepeatWrapping;
+    material.roughnessMap.wrapS = THREE.RepeatWrapping;
+    material.metalnessMap.wrapS = THREE.RepeatWrapping;
+    material.normalMap.wrapS = THREE.RepeatWrapping;
+
+    weapon.traverse((child) => {
+      if ( child instanceof THREE.Mesh ) {
+        child.material = material;
+      }
+    });
+
+    weapon.position.set(1, -.5, -1.5);
+    camera.add(weapon);
+  });
+
+  // bullets
   let plasmaBalls = [];
   let bulletsSpeed = 0;
 
   !function weapon() {
-    let weapon = new THREE.Mesh(
-      new THREE.BoxGeometry(1, 1, 5),
-      new THREE.MeshPhongMaterial({ color: 0xbf963f })
-    );
-    var emitter = new THREE.Object3D()
-    var wpVector =  new THREE.Vector3()
-
-    weapon.position.set(2, -1, -2.5);
-    camera.add(weapon);
-    emitter.position.set(2, -1, -5);
+    let emitter = new THREE.Object3D()
+    let wpVector =  new THREE.Vector3()
+    emitter.position.set(1, -.5, -1.5);
     camera.add(emitter);
 
     window.addEventListener("mousedown", (e) => {
       if (!e.button) {
         let plasmaBall = new THREE.Mesh(
-          new THREE.SphereGeometry(0.5, 8, 4),
-          new THREE.MeshBasicMaterial({ color: "white" })
+          new THREE.SphereGeometry(0.1, 8, 4),
+          new THREE.MeshBasicMaterial({ color: "brown" })
         );
 
         plasmaBall.position.copy(emitter.getWorldPosition(wpVector))
