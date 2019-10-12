@@ -1,22 +1,22 @@
-const config = require('./config');
+const config = require("./config");
 
 const
-  publicDir = require('path').join(__dirname, './'),
-  express = require('express'),
+  publicDir = require("path").join(__dirname, "./"),
+  express = require("express"),
   httpApp = new express(),
-  WebSocket = require('ws'),
+  WebSocket = require("ws"),
   wsServer = new WebSocket.Server({ port: config.wsPort })
 
 httpApp.use(express.static(publicDir))
 
-httpApp.get('/', (request, res) => {
+httpApp.get("/", (request, res) => {
   console.log("yep")
-  res.set('Content-Type', 'text/plain')
-  res.sendFile('index.html', { root: __dirname })
+  res.set("Content-Type", "text/plain")
+  res.sendFile("index.html", { root: __dirname })
 })
 
 let httpServer = httpApp.listen(config.serverPort, (err) => {
-  if (err) { return log('something bad happened', err) }
+  if (err) { return log("something bad happened", err) }
   log(`http server is listening on ${config.serverPort}`)
   log(`ws server is listening on ${config.wsPort}`)
 })
@@ -27,12 +27,17 @@ function commands(message) {
   }
 }
 
-wsServer.on('connection', (ws) => {
-  ws.on('message', (message) => {
+wsServer.on("connection", (ws) => {
+  ws.on("message", (message) => {
     commands(message)
-    // log('received: %s', message)
-    ws.send(message)
+    ws.send(JSON.stringify({
+      message,
+      timestamp: new Date()
+    }))
   })
 
-  ws.send('welcome to X3D ws server');
+  ws.send(JSON.stringify({
+    message: "welcome to X3D ws server",
+    timestamp: new Date()
+  }))
 });

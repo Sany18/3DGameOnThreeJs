@@ -106,7 +106,7 @@ export default class PointerLockControls {
       blocker.style.display = 'none'
       instructions.style.display = 'none'
     } else {
-      blocker.style.display = 'block'
+      blocker.style.display = 'flex'
       instructions.style.display = ''
     }
   }

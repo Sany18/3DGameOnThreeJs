@@ -23,6 +23,8 @@ try {
 
     config.debug && console.info("Debug mode on")
 
+    if (window.location.protocol == "https:") window.location.protocol = "http:";
+
     window.log = console.log
     window.config = config
   }

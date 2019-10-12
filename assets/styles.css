@@ -5,12 +5,63 @@ html, body {
   margin: 0;
   padding: 0;
   background: #000;
-  font-family: Courier New;
+  font-family: "Courier New";
 }
 
 a {
   text-decoration: none;
   color: white;
+}
+
+#blocker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  background-color: #00000050;
+}
+
+#instructions {
+  font-size: 14px;
+  line-height: 24px;
+  transform: translate(0, 10px);
+  margin-bottom: 100px;
+}
+
+#instructions span {
+  background-image: url("./img/text-bg.jpg");
+  background-repeat:repeat-y;
+  background-position: 0 0;
+  color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  font-weight: 900;
+  font-size: 50px;
+  animation: shake .2s linear infinite;
+  animation: backgroundAnimated 10s linear infinite;
+}
+
+@keyframes shake {
+  0%   { transform: translate(0px, 1px); }
+  20%  { transform: translate(0px, -1px); }
+  40%  { transform: translate(-1px, 0px); }
+  60%  { transform: translate(1px, -1px); }
+  80%  { transform: translate(0px, -1px); }
+  100% { transform: translate(0px, 1px); }
+}
+
+@keyframes backgroundAnimated {
+  from { background-position: 0 0 }
+  to   { background-position: 0 130% }
 }
 
 #target {
@@ -41,46 +92,6 @@ a {
   content: '';
 }
 
-#blocker {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.5);
-}
-
-#instructions {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-
-  width: 100%;
-  height: 100%;
-
-  color: #ffffff;
-  text-align: center;
-  font-size: 14px;
-  line-height: 24px;
-  cursor: pointer;
-  transform: translate(0, 10px);
-}
-
-#instructions span {
-  font-size: 35px;
-  animation-duration: .2s;
-  animation-iteration-count: infinite;
-  animation-name: shake;
-}
-
-@keyframes shake {
-  0%   { transform: translate(0px, 1px); }
-  20%  { transform: translate(0px, -1px); }
-  40%  { transform: translate(-1px, 0px); }
-  60%  { transform: translate(1px, -1px); }
-  80%  { transform: translate(0px, -1px); }
-  100% { transform: translate(0px, 1px); }
-}
-
 #console {
   position: absolute;
   height: 40vh;
@@ -91,6 +102,7 @@ a {
   display: flex;
   flex-direction: column-reverse;
   transition: 0.3s;
+  z-index: 1;
 }
 
 #console input {
@@ -107,4 +119,95 @@ a {
 
 .visible {
   top: 0vh !important;
+}
+
+#chat {
+  position: fixed;
+  left: 25px;
+  bottom: 60px;
+  height: 300px;
+  width: 25vw;
+  background: #00000030;
+  border-radius: 10px;
+  transition: .3s;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.chat-messages-field {
+  color: white;
+  flex: 1;
+  overflow-y: auto;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.chat-messages-field::-webkit-scrollbar {
+  width: 0px;
+}
+
+.chat-messages-field::-webkit-scrollbar-thumb {
+  background: #666;
+  border-radius: 20px;
+}
+
+.chat-messages-field::-webkit-scrollbar-track {
+  background: #000000cc;
+  border-radius: 20px;
+}
+
+.chat-message {
+  opacity: .1;
+  font-size: .8em;
+}
+
+.chat-timestamp {
+  font-size: .7em;
+  color: yellow;
+}
+
+.chat-massage-text {}
+
+.chat-input {
+  width: 100%;
+  background: grey;
+  outline: none;
+  border: 0px solid black;
+  padding: 3px;
+  border-radius: 3px;
+  font-family: "Courier New";
+  font-weight: 600;
+  background: #00000000;
+  color: white;
+  opacity: .1;
+  box-sizing: border-box;
+}
+
+#chat:hover, #chat.active {
+  background: #000000c0;
+  transition: .3s;
+}
+
+#chat:hover .chat-input,
+#chat.active .chat-input {
+  opacity: 1;
+  transition: .3s;
+}
+
+#chat:hover .chat-messages-field::-webkit-scrollbar,
+#chat.active .chat-messages-field::-webkit-scrollbar {
+  width: 10px;
+}
+
+#chat:hover .chat-message, #chat.active .chat-message {
+  opacity: 1;
+  transition: .3s;
+}
+
+#chat:hover .chat-input, #chat.active .chat-input {
+  background: #ffffff30;
+  border: 1px solid black;
+  transition: .3s;
 }
