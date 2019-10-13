@@ -1,22 +1,20 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta scharset="utf-8">
   <link rel="stylesheet" type="text/css" href="assets/styles.css">
   <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <meta scharset="utf-8">
-  <title>X3D</title>
+  <link rel="icon" type="image/png" href="./assets/favicon.ico"/>
+  <title>Dark side</title>
   <!-- Scripts -->
   <script src="libs/three/three.min.js"></script>
-  <script src="libs/three/stats.js"></script>
   <script src="libs/ammo.js"></script>
   <script src="libs/dat.gui.min.js"></script>
   <script type="module" src="./game/game.js"></script>
 </head>
 <body>
   <div id="blocker">
-    <div id="instructions">
-      <span>PAUSE</span>
-    </div>
+    <span>Menu</span>
   </div>
 
   <div id="target"></div>
@@ -24,6 +22,8 @@
     <input id="console_input"/>
     <span id="console_text"></span>
   </div>
+
+  <div id="fps"></div>
 
   <form id="chat">
     <div class="chat-messages-field"></div>

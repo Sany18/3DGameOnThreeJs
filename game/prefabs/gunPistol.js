@@ -1,7 +1,7 @@
 let GunPistol = (scene, camera, plasmaBalls, bulletsSpeed) => {
   new THREE.OBJLoader().load(config.imagePrefix + 'pistol/Cerberus.obj', (weapon) => {
-    var material = new THREE.MeshStandardMaterial();
-    var loader = new THREE.TextureLoader().setPath(config.imagePrefix + 'pistol/');
+    let material = new THREE.MeshStandardMaterial();
+    let loader = new THREE.TextureLoader().setPath(config.imagePrefix + 'pistol/');
 
     material.roughness = 1;
     material.metalness = 1;

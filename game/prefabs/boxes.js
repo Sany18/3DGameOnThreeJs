@@ -1,7 +1,8 @@
 let Boxes = (scene, camera, objects) => {
   let boxGeometry = new THREE.BoxBufferGeometry(20, 20, 20)
-  let boxTexture = THREE.globalFunctions.loadBasicTexture('woodBox.png')
-  let boxMaterial = new THREE.MeshPhongMaterial({ map: boxTexture })
+  // let boxTexture = THREE.globalFunctions.loadBasicTexture('woodBox.png')
+  // let boxMaterial = new THREE.MeshPhongMaterial({ map: boxTexture })
+  let boxMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, opacity: 1 });
 
   for (let i = 0; i < 10; i++) {
     let box = new THREE.Mesh(boxGeometry, boxMaterial)

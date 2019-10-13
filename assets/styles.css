@@ -23,45 +23,27 @@ a {
   width: 100%;
   height: 100%;
   cursor: pointer;
-  background-color: #00000050;
+  background: #1024;
 }
 
-#instructions {
-  font-size: 14px;
-  line-height: 24px;
-  transform: translate(0, 10px);
-  margin-bottom: 100px;
-}
-
-#instructions span {
-  background-image: url("./img/text-bg.jpg");
-  background-repeat:repeat-y;
-  background-position: 0 0;
-  color: transparent;
-  -webkit-font-smoothing: antialiased;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-
+#blocker span {
+  color: black;
   font-weight: 900;
-  font-size: 50px;
-  animation: shake .2s linear infinite;
-  animation: backgroundAnimated 10s linear infinite;
+  font-size: 75px;
+  animation: shake 3s ease-in-out infinite;
+  position: absolute;
+  bottom: 25px;
+  right: 75px;
 }
+/*
+#blocker[style="display: flex;"] ~ canvas {
+  display: none;
+}*/
 
 @keyframes shake {
-  0%   { transform: translate(0px, 1px); }
-  20%  { transform: translate(0px, -1px); }
-  40%  { transform: translate(-1px, 0px); }
-  60%  { transform: translate(1px, -1px); }
-  80%  { transform: translate(0px, -1px); }
-  100% { transform: translate(0px, 1px); }
-}
-
-@keyframes backgroundAnimated {
-  from { background-position: 0 0 }
-  to   { background-position: 0 130% }
+  0%   { transform: translate(0px, 0px); }
+  50%  { transform: translate(-5px, 2px); }
+  100% { transform: translate(0px, 0px); }
 }
 
 #target {
@@ -117,15 +99,21 @@ a {
   background: rgba(100, 100, 100, 0.8)
 }
 
-.visible {
-  top: 0vh !important;
+#fps {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  font-family: Courier New;
+  color: #ded600;
 }
+
+.visible { top: 0vh !important; }
 
 #chat {
   position: fixed;
   left: 25px;
   bottom: 60px;
-  height: 300px;
+  height: 20vh;
   width: 25vw;
   background: #00000030;
   border-radius: 10px;
@@ -167,8 +155,6 @@ a {
   font-size: .7em;
   color: yellow;
 }
-
-.chat-massage-text {}
 
 .chat-input {
   width: 100%;

@@ -4,3 +4,9 @@
 - npm start
 
 http://localhost:6020
+
+#### if something wrong
+index.php
+```php
+<?php header('Location: /index.html');?>
+```

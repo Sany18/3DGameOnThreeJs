@@ -1,6 +1,4 @@
 // document.body.contentEditable=true
-// getEventListeners($(‘selector’))
-// console.table(variableName)
 
 !function greeting() {
   let terminalWidth = 250

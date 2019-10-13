@@ -1,11 +1,11 @@
 {
-  "name": "andor_game",
+  "name": "dark-side",
   "version": "1.0.0",
-  "description": "three js\\bullet",
+  "description": "three js bullet",
   "main": "index.html",
   "scripts": {
     "test": "test",
-    "start": "node index.js && start http://localhost:6020"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -17,11 +17,11 @@
     "physics",
     "3D",
     "game",
-    "AndorGame",
+    "DarkSide",
     "Hoxz",
     "AlexT."
   ],
-  "author": "Alex T.",
+  "author": "Hoxz",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Sany18/3DGame/issues"

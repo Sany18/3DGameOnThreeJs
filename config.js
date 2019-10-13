@@ -1,7 +1,6 @@
 let config = {
-  serverPort: 6020,
-  wsPort: 6030,
-  textures: 9,
+  serverPort: 80,
+  wsPort: 9852,
   shadowResolution: 2048,
   resolutionMultiplier: 1,
   moveSpeed: 40,
@@ -10,9 +9,10 @@ let config = {
   jumpHeight: 25,
   debug: true,
   enableShadows: true,
-  showAxes: false,
-  showTesturesSize: true,
-  helperLight: false
+  showAxes: true,
+  showFps: true,
+  chatDbSeparator: '|-=-|',
+  chatDbURN: './db/chat.ssv'
 }
 
 try {
@@ -21,9 +21,7 @@ try {
     config['imagePrefix'] = `${origin}/assets/textures/`
     config['threeJsVersion'] = THREE.getVersion
 
-    config.debug && console.info("Debug mode on")
-
-    if (window.location.protocol == "https:") window.location.protocol = "http:";
+    config.debug && console.info('Debug mode on')
 
     window.log = console.log
     window.config = config
