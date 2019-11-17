@@ -27,7 +27,7 @@ a {
 }
 
 #blocker span {
-  color: #700050;
+  color: #444;
   font-weight: 900;
   font-size: 50px;
   animation: shake 3s ease-in-out infinite;
@@ -43,14 +43,10 @@ a {
 }
 
 #blocker span:hover {
-  box-shadow: 0 0 5px #96006b;
+  box-shadow: 0 0 5px #444;
   background: #0004;
   transition: .3s;
 }
-
-/*#blocker[style="display: flex;"] ~ canvas {
-  display: none;
-}*/
 
 @keyframes shake {
   0%   { transform: translate(0px, 0px); }

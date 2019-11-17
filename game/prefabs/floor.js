@@ -5,7 +5,7 @@ export default (scene, camera) => {
     wireframe: true
   }
 
-  // const texture = THREE.globalFunctions.loadBasicTexture('skybox/4.png')
+  // const texture = globalFunctions.loadBasicTexture('skybox/4.png')
   const repeats = state.planeSize / 16
   const geometry = new THREE.PlaneBufferGeometry(state.planeSize, state.planeSize, state.planeSize, state.planeSize)
   const material = new THREE.MeshBasicMaterial({ color: 0x6A0055, wireframe: state.wireframe, opacity: 0.5 });

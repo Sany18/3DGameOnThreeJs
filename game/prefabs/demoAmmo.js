@@ -7,7 +7,7 @@ let DemoAmmo = (scene, physicsWorld, rigidBodies) => {
 
     //threeJS Section
     let boxGeometry = new THREE.BoxBufferGeometry()
-    let boxTexture = THREE.globalFunctions.loadBasicTexture('woodBox.png')
+    let boxTexture = globalFunctions.loadBasicTexture('woodBox.png')
     let boxMaterial = new THREE.MeshPhongMaterial({ map: boxTexture })
     let block = new THREE.Mesh(boxGeometry, boxMaterial)
 

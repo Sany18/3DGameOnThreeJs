@@ -43,7 +43,7 @@
         addText('assigned ' + value)
         clearInput()
 
-        THREE.globalFunctions.onChangeProperties(arr[0])
+        globalFunctions.onChangeProperties(arr[0])
       } else addText('command not found')
     }
   }

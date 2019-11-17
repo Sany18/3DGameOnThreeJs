@@ -1,22 +1,24 @@
 let config = {
-  serverPort: 80,
-  wsPort: 9852,
+  serverPort: 8080,
+  wsPort: 80,
 
   shadowResolution: 2048,
   resolutionMultiplier: 1,
+  antialias: false,
 
   moveSpeed: 40,
   yourMass: 100.0,
   gravity: 9.8,
-  jumpHeight: 25,
+  jumpHeight: 40,
 
   debug: true,
   enableShadows: true,
   showAxes: true,
   showFps: true,
+  showTesturesSize: true,
 
   volume: 100,
-  music: 10,
+  music: 50,
 
   chatDbSeparator: '|-=-|',
   chatDbURN: './db/chat.ssv'

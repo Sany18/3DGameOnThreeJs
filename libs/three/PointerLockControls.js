@@ -100,6 +100,7 @@ export default class PointerLockControls {
   pointerlockchange = () => {
     this.moveForward = this.moveBackward = this.moveLeft = this.moveRight = this.canJump = false
     blocker.style.display = document.pointerLockElement ? 'none' : 'flex'
+    globalFunctions.onBlocker(!document.pointerLockElement)
   }
 
   connect = () => {

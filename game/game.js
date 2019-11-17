@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let state = {
     camera: {
       angle: 75,
-      far: 500,
+      far: 1000,
       near: .1,
       z: -20, y: 10, x: -20,
       rotation: { y: 0 }
@@ -25,18 +25,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* camera */
-  let listener = new THREE.AudioListener()
   let camera = new THREE.PerspectiveCamera(
     state.camera.angle, innerWidth / innerHeight,
     state.camera.near, state.camera.far
   )
+  let listener = new THREE.AudioListener()
   camera.position.set(state.camera.x, state.camera.y, state.camera.z)
   camera.rotation.y = state.camera.rotation.y
   camera.add(listener)
   scene.add(camera)
 
   /* renderer */
-  let renderer = new THREE.WebGLRenderer({ antialias: true })
+  let renderer = new THREE.WebGLRenderer({ antialias: config.antialias })
   renderer.setPixelRatio(devicePixelRatio * config.resolutionMultiplier)
   renderer.setSize(innerWidth, innerHeight)
   renderer.shadowMap.enabled = true
@@ -50,16 +50,44 @@ document.addEventListener('DOMContentLoaded', () => {
   renderer.shadowMapHeight = 1024
   document.body.appendChild(renderer.domElement)
 
-  /********************/
-  /* After initialize */
-  /********************/
+  /* filters / shaders */
+  
+  /* glitches */
+  let composer = new THREE.EffectComposer(renderer)
+  let glitchPass = new THREE.GlitchPass()
+  composer.addPass(new THREE.RenderPass(scene, camera))
+  composer.addPass(glitchPass)
+  glitchPass.goWild = false
 
+  /* blur */
+  window.hblur = new THREE.ShaderPass(THREE.HorizontalBlurShader)
+  let vblur = new THREE.ShaderPass(THREE.VerticalBlurShader)
+  vblur.renderToScreen = true
+  composer.addPass(hblur)
+  composer.addPass(vblur)
+
+  /* film */
+  let filmPass = new THREE.FilmPass(1, .2, 648, false)
+  composer.addPass(filmPass)
+  
   /* global listeners */
   addEventListener('resize', () => {
     camera.aspect = innerWidth / innerHeight
     camera.updateProjectionMatrix()
     renderer.setSize(innerWidth, innerHeight)
+    composer.setSize(innerWidth, innerHeight)
   }, false)
+
+  globalFunctions.onBlocker = state => {
+    glitchPass.enabled = state
+    hblur.enabled = state
+    vblur.enabled = state
+    filmPass.uniforms.grayscale.value = state
+  }
+
+  /********************/
+  /* After initialize */
+  /********************/
 
   /* objects */
   Skybox(scene, camera)
@@ -70,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   scene.fog = new THREE.Fog(0xc20000)
 
+  /* music */
   let audioLoader = new THREE.AudioLoader()
   let sound = new THREE.Audio(listener)
   audioLoader.load(assets("music/Tommy - Flyin'.mp3"), buffer => {
@@ -147,9 +176,9 @@ document.addEventListener('DOMContentLoaded', () => {
     //   bullet.translateZ(-bulletsSpeed * delta);
     // });
 
-    objects.forEach(box => {
-      box.rotation.y = 5
-    })
+    // objects.forEach(box => {
+    //   box.rotation.y += 0.005
+    // })
 
     controls.control(objects)
   }
@@ -158,7 +187,8 @@ document.addEventListener('DOMContentLoaded', () => {
     action(time, delta)
     // updatePhysics(delta);
 
-    renderer.render(scene, camera)
+    composer.render() /* with shaders */
+    // renderer.render(scene, camera)
     requestAnimationFrame(animate)
   }()
 
