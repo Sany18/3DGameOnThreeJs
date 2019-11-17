@@ -40,6 +40,8 @@ try {
 
 try {
   if (global) {
+    config.serverPort = process.env.PORT || config.serverPort
+
     global.log = console.log
     module.exports = config
   }
