@@ -27,16 +27,28 @@ a {
 }
 
 #blocker span {
-  color: black;
+  color: #700050;
   font-weight: 900;
-  font-size: 75px;
+  font-size: 50px;
   animation: shake 3s ease-in-out infinite;
   position: absolute;
   bottom: 25px;
-  right: 75px;
+  right: 25px;
+  width: 250px;
+  text-align: center;
+  text-shadow: 0 0 2px #700050;
+  transition: .3s;
+  border-radius: 25% 0 0 15px;
+  user-select: none;
 }
-/*
-#blocker[style="display: flex;"] ~ canvas {
+
+#blocker span:hover {
+  box-shadow: 0 0 5px #96006b;
+  background: #0004;
+  transition: .3s;
+}
+
+/*#blocker[style="display: flex;"] ~ canvas {
   display: none;
 }*/
 

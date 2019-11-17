@@ -1,6 +1,6 @@
 export default (scene, camera) => {
   const state = {
-    planeSize: 500,
+    planeSize: 200,
     scale: 20,
     wireframe: true
   }

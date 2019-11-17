@@ -5,24 +5,23 @@ export default class PointerLockControls {
     this.connect()
   }
 
-  yourHeight = 12
-  euler = new THREE.Euler(0, 0, 0, 'YXZ')
-  clock = new THREE.Clock()
-  velocity = new THREE.Vector3()
-  direction = new THREE.Vector3()
-  raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10 + this.yourHeight)
-  PI_2 = Math.PI / 2
+  yourHeight = (height = 12) => this.crouch ? height / 2 : height
+  crouch = false
   moveForward = false
   moveBackward = false
   moveLeft = false
   moveRight = false
   canJump = false
-  crouch = false
+  euler = new THREE.Euler(0, 0, 0, 'YXZ')
+  clock = new THREE.Clock()
+  velocity = new THREE.Vector3()
+  direction = new THREE.Vector3()
+  raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10 + this.yourHeight())
+  PI_2 = Math.PI / 2
 
   control = objects => {
     if (document.pointerLockElement) {
-      let intersections = this.raycaster.intersectObjects(objects)
-      let onObject = intersections.length > 0
+      let onObject = this.raycaster.intersectObjects(objects).length > 0
       let delta = this.clock.getDelta()
 
       this.raycaster.ray.origin.copy(this.camera.position)
@@ -36,22 +35,17 @@ export default class PointerLockControls {
       this.direction.x = Number(this.moveLeft) - Number(this.moveRight)
       // this.direction.normalize() // this ensures consistent movements in all directions
 
-      if (this.moveForward || this.moveBackward)
-        this.velocity.z -= this.direction.z * config.moveSpeed * 10 * delta
-      if (this.moveLeft || this.moveRight)
-        this.velocity.x -= this.direction.x * config.moveSpeed * 10 * delta
-      if (onObject === true) {
-        this.velocity.y = Math.max(0, this.velocity.y)
-        this.canJump = true
-      }
+      if (this.moveForward || this.moveBackward) this.velocity.z -= this.direction.z * config.moveSpeed * 10 * delta
+      if (this.moveLeft || this.moveRight) this.velocity.x -= this.direction.x * config.moveSpeed * 10 * delta
+      if (onObject === true) {this.velocity.y = Math.max(0, this.velocity.y); this.canJump = true}
 
       this.camera.position.y += this.velocity.y * delta // new behavior | поведение
       this.camera.translateX(this.velocity.x * delta)
       this.camera.translateZ(this.velocity.z * delta)
 
-      if (this.camera.position.y < this.yourHeight) {
+      if (this.camera.position.y < this.yourHeight()) {
         this.velocity.y = 0
-        this.camera.position.y = this.yourHeight
+        this.camera.position.y = this.yourHeight()
         this.canJump = true
       }
     }
@@ -74,29 +68,33 @@ export default class PointerLockControls {
 
   keydown = event => {
     switch (event.keyCode) {
-      case 38: case 87: this.moveForward = true; break; // forward
-      case 37: case 65: this.moveLeft = true; break; // left
+      case 38: case 87: this.moveForward = true; break;  // forward
+      case 37: case 65: this.moveLeft = true; break;     // left
       case 40: case 83: this.moveBackward = true; break; // back
-      case 39: case 68: this.moveRight = true; break; // right
-      case 17: this.crouch = true; break; // crouch
+      case 39: case 68: this.moveRight = true; break;    // right
+      case 17: this.crouch = true; break;                // crouch
       case 32: if (this.canJump == true) {this.velocity.y += config.jumpHeight * 10}; this.canJump = false; break;
     }
   }
 
   keyup = event => {
     switch (event.keyCode) {
-      case 38: case 87: this.moveForward = false; break; // forward
-      case 37: case 65: this.moveLeft = false; break; // left
+      case 38: case 87: this.moveForward = false; break;  // forward
+      case 37: case 65: this.moveLeft = false; break;     // left
       case 40: case 83: this.moveBackward = false; break; // back
-      case 39: case 68: this.moveRight = false; break; // right
-      case 17: this.crouch = false; break; // crouch
+      case 39: case 68: this.moveRight = false; break;    // right
+      case 17: this.crouch = false; break;                // crouch
     }
   }
 
-  blocker = () => {
-    document.pointerLockElement
-      ? document.exitPointerLock()
-      : document.body.requestPointerLock()
+  blocker = event => {
+    if (event.target.id == 'menu-button') {
+      console.log('Menu...')
+    } else {
+      document.pointerLockElement
+        ? document.exitPointerLock()
+        : document.body.requestPointerLock()
+    }
   }
 
   pointerlockchange = () => {

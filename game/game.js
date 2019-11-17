@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let state = {
     camera: {
       angle: 75,
-      far: 1000,
+      far: 500,
       near: .1,
       z: -20, y: 10, x: -20,
       rotation: { y: 0 }
@@ -25,12 +25,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* camera */
+  let listener = new THREE.AudioListener()
   let camera = new THREE.PerspectiveCamera(
     state.camera.angle, innerWidth / innerHeight,
     state.camera.near, state.camera.far
   )
   camera.position.set(state.camera.x, state.camera.y, state.camera.z)
   camera.rotation.y = state.camera.rotation.y
+  camera.add(listener)
   scene.add(camera)
 
   /* renderer */
@@ -60,9 +62,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }, false)
 
   /* objects */
-  let controls = new PointerLockControls(camera, Skybox(scene, camera))
+  Skybox(scene, camera)
+  let controls = new PointerLockControls(camera)
   let directionLight = DirectionLight(scene)
-  let floor = Floor(scene)
+  Floor(scene)
+  objects.push(...Boxes(scene, camera, objects))
+
+  scene.fog = new THREE.Fog(0xc20000)
+
+  let audioLoader = new THREE.AudioLoader()
+  let sound = new THREE.Audio(listener)
+  audioLoader.load(assets("music/Tommy - Flyin'.mp3"), buffer => {
+    sound.setBuffer(buffer)
+    sound.setLoop(true)
+    sound.setVolume(config.music / 100)
+    sound.play()
+  })
 
   /* camera control */
 
@@ -113,7 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // let plasmaBalls = []
   // let bulletsSpeed = 0
   // GunPistol(scene, camera, plasmaBalls, bulletsSpeed)
-  Boxes(scene, camera, objects)
   // RightHand(scene, camera)
 
   /* axes */
@@ -132,6 +146,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // plasmaBalls.forEach(bullet => {
     //   bullet.translateZ(-bulletsSpeed * delta);
     // });
+
+    objects.forEach(box => {
+      box.rotation.y = 5
+    })
 
     controls.control(objects)
   }

@@ -1,4 +1,5 @@
-let Boxes = (scene, camera, objects) => {
+export default (scene, camera) => {
+  let objects = []
   let boxGeometry = new THREE.BoxBufferGeometry(20, 20, 20)
   // let boxTexture = THREE.globalFunctions.loadBasicTexture('woodBox.png')
   // let boxMaterial = new THREE.MeshPhongMaterial({ map: boxTexture })
@@ -18,6 +19,6 @@ let Boxes = (scene, camera, objects) => {
     scene.add(box)
     objects.push(box)
   }
-}
 
-export default Boxes
+  return objects
+}
