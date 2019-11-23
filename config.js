@@ -1,6 +1,6 @@
 let config = {
-  serverPort: 8080,
-  wsPort: 80,
+  serverPort: 81,
+  wsPort: 82,
 
   shadowResolution: 2048,
   resolutionMultiplier: 1,
@@ -18,7 +18,7 @@ let config = {
   showTesturesSize: true,
 
   volume: 100,
-  music: 50,
+  music: 0,
 
   chatDbSeparator: '|-=-|',
   chatDbURN: './db/chat.ssv'

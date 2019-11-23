@@ -16,6 +16,16 @@ window.globalFunctions = {
       xhr => console.info((xhr.loaded/xhr.total * 100) + ' % loaded'), // temporarily unavailable
       xhr => console.info('Texture not loaded ' + address)
     )
+  },
+  unload: () => {
+    game = null
+    THREE = null
+    assets = null
+    log = null
+    config = null
+    globalFunctions = null
+
+    console.log('[unloaded]')
   }
 }
 

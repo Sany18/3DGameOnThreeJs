@@ -3,13 +3,8 @@
   let customConsoleText = document.getElementById('console_text')
   let customConsoleInput = document.getElementById('console_input')
 
-  let addText = (msg) => {
-    customConsoleText.innerHTML += '<br>' + msg
-  }
-
-  let clearInput = () => {
-    customConsoleInput.value = ''
-  }
+  let addText = msg => customConsoleText.innerHTML += '<br>' + msg
+  let clearInput = () => customConsoleInput.value = ''
 
   let commands = {
     help: () => {

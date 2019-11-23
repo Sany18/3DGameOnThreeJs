@@ -1,7 +1,6 @@
 export default class PointerLockControls {
-  constructor(camera, skyBox) {
+  constructor(camera) {
     this.camera = camera
-    this.skyBox = skyBox
     this.connect()
   }
 
@@ -87,21 +86,21 @@ export default class PointerLockControls {
     }
   }
 
-  blocker = event => {
-    if (event.target.id == 'menu-button') {
-      console.log('Menu...')
-    } else {
-      document.pointerLockElement
-        ? document.exitPointerLock()
-        : document.body.requestPointerLock()
-    }
-  }
+   blocker = event => {
+     if (event.target.id == 'menu-button') {
+       console.log('Menu...')
+     } else {
+       document.pointerLockElement
+         ? document.exitPointerLock()
+         : document.body.requestPointerLock()
+     }
+   }
 
-  pointerlockchange = () => {
-    this.moveForward = this.moveBackward = this.moveLeft = this.moveRight = this.canJump = false
-    blocker.style.display = document.pointerLockElement ? 'none' : 'flex'
-    globalFunctions.onBlocker(!document.pointerLockElement)
-  }
+   pointerlockchange = () => {
+     this.moveForward = this.moveBackward = this.moveLeft = this.moveRight = this.canJump = false
+     document.getElementById('blocker').style.display = document.pointerLockElement ? 'none' : 'flex'
+     globalFunctions.onBlocker(!document.pointerLockElement)
+   }
 
   connect = () => {
     document.addEventListener('mousemove', this.onMouseMove, false)

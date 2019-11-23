@@ -4,9 +4,8 @@ const config = require('./config'),
 // ----http | express----
 (() => {
   const express = require('express'),
-        httpApp = new express();
-        h = config.serverPort,
-        w = config.wsPort;
+        httpApp = new express(),
+        drawLine = require('./libs/consoleLine.js');
 
   httpApp.use(express.static(root))
 
@@ -18,9 +17,7 @@ const config = require('./config'),
   let httpServer = httpApp.listen(config.serverPort, err => {
     if (err) { return log('something wrong happened', err) }
 
-    log('┌────────────┬────────────┐')
-    log(`│ http: ${h} │  ws: ${w}  │`)
-    log('└────────────┴────────────┘')
+    drawLine({ http: config.serverPort, ws: config.wsPort })
   })
 })()
 

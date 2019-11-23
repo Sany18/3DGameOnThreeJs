@@ -1,16 +1,47 @@
-html, body {
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  background: #000;
-  font-family: "Courier New";
+@font-face {
+  font-family: Code;
+  src: url('./fonts/Lo-Res 9 Wide.ttf');
+  font-weight: 100;
+  font-style: normal;
 }
 
-a {
-  text-decoration: none;
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: Code;
+  margin: unset;
+  background: black;
+}
+
+.button:hover { color: grey; }
+.button { cursor: pointer; user-select: none; }
+
+.main { display: flex; }
+
+.menu {
   color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px;
+  width: 250px;
+  height: 100vh;
+  border: 1px solid;
+}
+
+.system {
+  border: 1px dashed white;
+}
+
+.system-info {}
+.youtube { width: 182px; height: 120px; }
+
+.content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  overflow: hidden;
 }
 
 #blocker {
@@ -20,72 +51,34 @@ a {
   flex-direction: column;
 
   position: fixed;
-  width: 100%;
+  width: calc(100% - 250px);
   height: 100%;
   cursor: pointer;
-  background: #1024;
+  background: #102c;
 }
 
 #blocker span {
-  color: #444;
-  font-weight: 900;
-  font-size: 50px;
-  animation: shake 3s ease-in-out infinite;
   position: absolute;
+  right: 0;
   bottom: 25px;
-  right: 25px;
-  width: 250px;
+  width: 100%;
+  color: #444;
+  font-size: 50px;
   text-align: center;
-  text-shadow: 0 0 2px #700050;
-  transition: .3s;
-  border-radius: 25% 0 0 15px;
   user-select: none;
+  transition: .3s;
 }
 
 #blocker span:hover {
-  box-shadow: 0 0 5px #444;
-  background: #0004;
+  color: #222;
+  background: #555;
   transition: .3s;
-}
-
-@keyframes shake {
-  0%   { transform: translate(0px, 0px); }
-  50%  { transform: translate(-5px, 2px); }
-  100% { transform: translate(0px, 0px); }
-}
-
-#target {
-  position: absolute;
-  top: calc(50vh - 1px);
-  left: calc(50vw - 1px);
-  width: 2px;
-  height: 2px;
-  color: white;
-  z-index: 100;
-}
-
-#target:before {
-  top: -4px;
-  position: absolute;
-  background-color: #fff;
-  height: 10px;
-  width: 2px;
-  content: '';
-}
-
-#target:after {
-  left: -4px;
-  position: absolute;
-  background-color: #fff;
-  height: 2px;
-  width: 10px;
-  content: '';
 }
 
 #console {
   position: absolute;
   height: 40vh;
-  width: 100%;
+  width: calc(100% - 250px);
   top: -40vh;
   background: rgba(50, 50, 50, 0.8);
   color: white;
@@ -105,14 +98,6 @@ a {
   outline: none;
   color: white;
   background: rgba(100, 100, 100, 0.8)
-}
-
-#fps {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  font-family: Courier New;
-  color: #ded600;
 }
 
 .visible { top: 0vh !important; }

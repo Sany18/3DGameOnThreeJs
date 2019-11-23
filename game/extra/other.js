@@ -8,19 +8,19 @@
   let counter = 0
   let launchChance = 0.01
   let cursorTime = 500
-  let cursor = () => ((new Date().getTime()/cursorTime)%2 > 1 ? '█' : ' ')
+  let cursor = () => ((Date().getTime() / cursorTime)%2 > 1 ? '█' : ' ')
 
-  function finish(style) {
-    let timerId = setInterval(function() {
+  const finish = (style) => {
+    let timerId = setInterval(() => {
       console.clear();
       console.log(`%c${substr}${cursor()}`, style)
     }, cursorTime)
 
-    setTimeout(function() {clearInterval(timerId)}, 15000)
+    setTimeout(() => {clearInterval(timerId)}, 15000)
   }
 
-  function greeting(factor = Math.random()) {
-    setTimeout(function() {
+  const greeting = (factor = Math.random()) => {
+    setTimeout(() => {
       let style = `background: #222; color: #0c0; padding: 5px ${terminalWidth}px 23px 8px; font-size: 15px;`
       console.clear(); terminalWidth -= 8.4
       console.log(`%c${substr += strs[counter].charAt(substr.length)}${cursor()}`, style)
@@ -36,8 +36,15 @@
 }()
 
 // add fileSize property to Number
-Object.defineProperty(Number.prototype,'fileSize',{value:function(a,b,c,d){
- return (a=a?[1e3,'k','B']:[1024,'K','iB'],b=Math,c=b.log,
- d=c(this)/c(a[0])|0,this/b.pow(a[0],d)).toFixed(2)
- +' '+(d?(a[1]+'MGTPEZY')[--d]+a[2]:'Bytes');
-},writable:false,enumerable:false})
+Object.defineProperty(
+  Number.prototype,
+  'fileSize',
+  { value: function(a, b, c, d) {
+      return (a=a?[1e3,'k','B']:[1024,'K','iB'],b=Math,c=b.log,
+      d=c(this)/c(a[0])|0,this/b.pow(a[0],d)).toFixed(2)
+      +' '+(d?(a[1]+'MGTPEZY')[--d]+a[2]:'Bytes');
+    },
+    writable:false,
+    enumerable:false
+  }
+)
