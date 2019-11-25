@@ -1,15 +1,15 @@
 export default (scene, camera) => {
   const state = {
-    planeSize: 200,
+    planeSize: 100,
     scale: 20,
     wireframe: true
   }
 
-  // const texture = globalFunctions.loadBasicTexture('skybox/4.png')
+  // const texture = THREE.loadBasicTexture('skybox/4.png')
   const repeats = state.planeSize / 16
   const geometry = new THREE.PlaneBufferGeometry(state.planeSize, state.planeSize, state.planeSize, state.planeSize)
   const material = new THREE.MeshBasicMaterial({ color: 0x6A0055, wireframe: state.wireframe, opacity: 0.5 });
-  const mesh = new THREE.Mesh(geometry, material)
+  const mesh = new Physijs.BoxMesh(geometry, material, 0)
 
   // texture.wrapS = THREE.RepeatWrapping
   // texture.wrapT = THREE.RepeatWrapping

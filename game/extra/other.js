@@ -8,7 +8,7 @@
   let counter = 0
   let launchChance = 0.01
   let cursorTime = 500
-  let cursor = () => ((Date().getTime() / cursorTime)%2 > 1 ? '█' : ' ')
+  let cursor = () => ((new Date().getTime() / cursorTime)%2 > 1 ? '█' : ' ')
 
   const finish = (style) => {
     let timerId = setInterval(() => {

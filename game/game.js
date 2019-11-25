@@ -1,7 +1,6 @@
 console.time('Scripts loaded')
-import PointerLockControls from '../libs/three/PointerLockControls.js'
-import { DirectionLight, Floor, Skybox, DemoAmmo } from './prefabs/index.js'
-import { GunPistol, Boxes, RightHand } from './prefabs/index.js'
+import { Player, DirectionLight, Floor, Skybox,
+         GunPistol, Boxes, RightHand } from './prefabs/index.js'
 import Stats from '../libs/stats.js'
 import './index.js'
 
@@ -18,9 +17,7 @@ const main = () => {
     camera: {
       angle: 75,
       far: 1000,
-      near: .1,
-      z: -20, y: 10, x: -20,
-      rotation: { y: 0 }
+      near: .1
     },
     frame: {
       elem: document.querySelector('.content'),
@@ -28,22 +25,21 @@ const main = () => {
       height: () => (document.querySelector('.content').offsetHeight - 5)
     }
   }
-  let tmpTrans = ''
-  let physicsWorld = []
-  let rigidBodies = []
+
+  /* physis */
+  Physijs.scripts.worker = '/libs/physis/physijs_worker.js'
+  Physijs.scripts.ammo = '/libs/physis/ammo.js'
+  scene = new Physijs.Scene({ reportsize: 60, fixedTimeStep: 1 / 60 })
+  scene.setGravity(new THREE.Vector3(0, -config.gravity, 0))
 
   /* camera */
   let camera = new THREE.PerspectiveCamera(
-    state.camera.angle,
-    state.frame.width() / state.frame.height(),
-    state.camera.near,
-    state.camera.far
+    state.camera.angle, state.frame.width() / state.frame.height(),
+    state.camera.near, state.camera.far
   )
   // let listener = new THREE.AudioListener()
-  camera.position.set(state.camera.x, state.camera.y, state.camera.z)
-  camera.rotation.y = state.camera.rotation.y
   // camera.add(listener)
-  scene.add(camera)
+  // scene.add(camera)
 
   /* renderer */
   let renderer = new THREE.WebGLRenderer({ antialias: config.antialias })
@@ -77,8 +73,8 @@ const main = () => {
   // composer.addPass(vblur)
 
   /* film */
-  let filmPass = new THREE.FilmPass(1, .2, 648, false)
-  composer.addPass(filmPass)
+  // let filmPass = new THREE.FilmPass(1, .2, 648, false)
+  // composer.addPass(filmPass)
 
   /* global listeners */
   addEventListener('resize', () => {
@@ -100,11 +96,11 @@ const main = () => {
   /********************/
 
   /* objects */
-  // Skybox(scene, camera)
-  let controls = new PointerLockControls(camera)
-  let directionLight = DirectionLight(scene)
+  Skybox(scene)
   Floor(scene)
-  objects.push(...Boxes(scene, camera, objects))
+  Boxes(scene, 1)
+  let player = new Player(camera, scene)
+  let directionLight = DirectionLight(scene)
 
   scene.fog = new THREE.Fog(0xc20000)
 
@@ -118,88 +114,70 @@ const main = () => {
   //   sound.play()
   // })
 
-  /* camera control */
+  let weapon = new THREE.Mesh(new THREE.BoxGeometry(.5, .5, 5), new THREE.MeshBasicMaterial({ color: 'black' }))
+  weapon.position.set(2, -1, -2.5)
+  camera.add(weapon)
 
-//   function setupPhysicsWorld() {
-//     let { gravity } = window.config
-//     let collisionConfiguration  = new Ammo.btDefaultCollisionConfiguration(),
-//         dispatcher              = new Ammo.btCollisionDispatcher(collisionConfiguration),
-//         overlappingPairCache    = new Ammo.btDbvtBroadphase(),
-//         solver                  = new Ammo.btSequentialImpulseConstraintSolver();
-//
-//     physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-//     physicsWorld.setGravity(new Ammo.btVector3(0, -gravity, 0))
-//   }
-//
-//   function updatePhysics(deltaTime) {
-//     physicsWorld.stepSimulation(deltaTime, 10)
-//
-//     for (let i = 0; i < rigidBodies.length; i++) {
-//       let objThree = rigidBodies[i];
-//       let objAmmo = objThree.userData.physicsBody;
-//       let ms = objAmmo.getMotionState();
-//       if (ms) {
-//         ms.getWorldTransform(tmpTrans);
-//         let p = tmpTrans.getOrigin();
-//         let q = tmpTrans.getRotation();
-//         objThree.position.set(p.x(), p.y(), p.z());
-//         objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
-//       }
-//     }
-//   }
+  // let emitter = new THREE.Object3D()
+  // emitter.position.set(2, -1, -5)
+  // weapon.add(emitter)
 
-//   Ammo().then(() => {
-//     // tmpTrans = new Ammo.btTransform();
-//     // setupPhysicsWorld();
-//
-//     console.log('asd')
-//
-//
-//     /* physics objecst */
-//     // DemoAmmo(scene, physicsWorld, rigidBodies)
-//   })
+  // let bullets = []
+  // let speed = 500
 
-  // let colGroupPlane = 1,
-  //     colGroupRedBall = 2,
-  //     colGroupGreenBall = 4
-  //
-  // let plasmaBalls = []
-  // let bulletsSpeed = 0
-  // GunPistol(scene, camera, plasmaBalls, bulletsSpeed)
-  // RightHand(scene, camera)
+  window.addEventListener("mousedown", () => {
+    // let plasmaBall = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 4), new THREE.MeshBasicMaterial({ color: 'orange' }))
 
-  /* axes */
-  if (config.showAxes) {
-    objects.forEach(node => {
-      const axes = new THREE.AxesHelper()
-      axes.material.depthTest = false
-      axes.renderOrder = 1
-      node.add(axes)
-    }
-  )}
+    // plasmaBall.position.copy(emitter.getWorldPosition(new THREE.Vector3()))
+    // plasmaBall.quaternion.copy(player.getQuaternion())
+    // bullets.push(plasmaBall)
+    // scene.add(plasmaBall)
+  })
+
+
+
+    window.raycaster = new THREE.Raycaster();
+
+    // window.addEventListener( 'mousemove', onMouseMove, false );
+
+    window.casterHelper = new THREE.ArrowHelper(raycaster.ray.direction, raycaster.ray.origin, 300, 0xff0000)
+    scene.add(casterHelper)
+
+
+  //   var terrain_geometry = makeTile(0.1, 40);
+  // var terrain_material = new THREE.MeshLambertMaterial({color: new THREE.Color(0.9, 0.55, 0.4)});
+  // var terrain = new THREE.Mesh(terrain_geometry, terrain_material);
+  // terrain.position.x = -2;
+  // terrain.position.z = -2;
+  // terrain.updateMatrixWorld(true);
+  // scene.add(terrain);
+
+
+
+
 
   let pause = false
 
   function action(time, delta) {
     if (config.showFps) stats.showFps().showMemory()
 
-    // plasmaBalls.forEach(bullet => {
-    //   bullet.translateZ(-bulletsSpeed * delta);
-    // });
+      raycaster.setFromCamera(new THREE.Vector3(5000,500,500), camera)
+      // var intersects = raycaster.intersectObjects(scene.children)
+      // for ( var i = 0; i < intersects.length; i++ ) {
+      //   intersects[ i ].object.material.color.set(0xff0000)
+      // }
 
-    // objects.forEach(box => {
-    //   box.rotation.y += 0.005
-    // })
+    // bullets.forEach(b => {b.translateZ(-speed * delta)})
+    // objects.forEach(box => { box.rotation.y += 0.005 })
 
-    controls.control(objects)
+    player.control()
   }
 
   !function animate(time, delta = clock.getDelta()) {
     action(time, delta)
-    // updatePhysics(delta);
+    scene.simulate()
+    composer.render()
 
-    composer.render() /* with shaders */
-    // renderer.render(scene, camera)
     if (!pause) requestAnimationFrame(animate)
   }()
 

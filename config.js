@@ -6,14 +6,13 @@ let config = {
   resolutionMultiplier: 1,
   antialias: false,
 
-  moveSpeed: 40,
-  yourMass: 100.0,
-  gravity: 9.8,
-  jumpHeight: 40,
+  moveSpeed: 100.0,
+  yourMass: 1.0,
+  gravity: 980,
+  jumpHeight: 200,
 
   debug: true,
   enableShadows: true,
-  showAxes: true,
   showFps: true,
   showTesturesSize: true,
 

@@ -1,24 +1,27 @@
-export default (scene, camera) => {
-  let objects = []
+export default (scene, amount = 5) => {
   let boxGeometry = new THREE.BoxBufferGeometry(20, 20, 20)
-  // let boxTexture = globalFunctions.loadBasicTexture('woodBox.png')
-  // let boxMaterial = new THREE.MeshPhongMaterial({ map: boxTexture })
-  let boxMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, opacity: 1 });
+  let boxTexture = THREE.loadBasicTexture('woodBox.png')
+  let boxMaterial = new THREE.MeshPhongMaterial({ map: boxTexture })
+  // let boxMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, opacity: 1 });
 
-  for (let i = 0; i < 100; i++) {
-    let box = new THREE.Mesh(boxGeometry, boxMaterial)
-    box.castShadow = true
-    box.receiveShadow = true
+  const createCube = (counter = 0) => {
+    if (counter < amount) {
+      let box = new Physijs.BoxMesh(boxGeometry, boxMaterial, 1)
+      box.castShadow = true
+      box.receiveShadow = true
 
-    box.position.x = Math.floor(Math.random() * 20 - 10) * 20
-    box.position.z = Math.floor(Math.random() * 20 - 10) * 20
-    box.position.y = Math.floor(Math.random() * 20 - 10) * 20
+      box.position.x = Math.floor(Math.random() * 20 - 10) * 5
+      box.position.z = Math.floor(Math.random() * 20 - 10) * 5
+      box.position.y = 100
+      box.rotation.x = Math.random() * 2
+      box.rotation.y = Math.random() * 2
+      box.rotation.z = Math.random() * 2
 
-    box.collision = new THREE.Box3().setFromObject(box);
+      scene.add(box)
 
-    scene.add(box)
-    objects.push(box)
+      setTimeout(() => createCube(counter + 1), 500)
+    }
   }
 
-  return objects
+  setTimeout(createCube, 2500)
 }
