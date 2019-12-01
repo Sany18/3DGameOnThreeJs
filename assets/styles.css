@@ -11,10 +11,15 @@ html, body {
   font-family: Code;
   margin: unset;
   background: black;
+  cursor: url('cursor/Synthwave Normal Select.cur'), auto;
 }
 
 .button:hover { color: grey; }
-.button { cursor: pointer; user-select: none; }
+
+.button {
+  cursor: url('cursor/Synthwave Link Select.cur'), pointer;
+  user-select: none;
+}
 
 .main { display: flex; }
 
@@ -29,10 +34,7 @@ html, body {
   border: 1px solid;
 }
 
-.system {
-  border: 1px dashed white;
-}
-
+.system { border: 1px dashed white; }
 .system-info {}
 .youtube { width: 182px; height: 120px; }
 
@@ -53,7 +55,7 @@ html, body {
   position: fixed;
   width: calc(100% - 250px);
   height: 100%;
-  cursor: pointer;
+  cursor: url('cursor/Synthwave Link Select.cur'), pointer;
   background: #102c;
 }
 
@@ -97,19 +99,18 @@ html, body {
   border: none;
   outline: none;
   color: white;
-  background: rgba(100, 100, 100, 0.8)
+  background: rgba(100, 100, 100, 0.8);
+  cursor: url('cursor/Synthwave Text Select.cur'), text;
 }
 
 .visible { top: 0vh !important; }
 
 #chat {
   position: fixed;
-  left: 25px;
-  bottom: 60px;
-  height: 20vh;
+  left: 260px;
+  bottom: 10px;
+  max-height: 300px;
   width: 25vw;
-  background: #00000030;
-  border-radius: 10px;
   transition: .3s;
   display: flex;
   flex-direction: column;
@@ -162,6 +163,7 @@ html, body {
   color: white;
   opacity: .1;
   box-sizing: border-box;
+  cursor: url('cursor/Synthwave Text Select.cur'), text;
 }
 
 #chat:hover, #chat.active {

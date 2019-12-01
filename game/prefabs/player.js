@@ -31,9 +31,9 @@ export default class Player {
       this.direction.x = +this.moveLeft - +this.moveRight
 
       if (this.moveForward || this.moveBackward) {
-        this.velocity.z -= this.direction.z * config.moveSpeed * 10 * delta }
+        this.velocity.z -= this.direction.z * config.moveSpeed * 5 * delta }
       if (this.moveLeft || this.moveRight) {
-        this.velocity.x -= this.direction.x * config.moveSpeed * 10 * delta }
+        this.velocity.x -= this.direction.x * config.moveSpeed * 5 * delta }
       if (this.body._physijs.touches.length != 0 && this.canJump) {
         this.body.applyCentralImpulse(this.jumpHeight)
         this.canJump = false }
@@ -82,22 +82,23 @@ export default class Player {
   }
 
   createPlayerModel = () => {
-    let boxGeometry = new THREE.BoxBufferGeometry(10, 20, 5)
+    let boxGeometry = new THREE.BoxBufferGeometry(5, 10, 2.5)
     let boxMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, opacity: 1 })
     let body = new Physijs.BoxMesh(boxGeometry, boxMaterial, config.yourMass)
 
     body.castShadow = true
     body.receiveShadow = true
-    body.position.x = 100
-    body.position.z = 100
-    body.position.y = 50
+    body.position.x = 50
+    body.position.z = 50
+    body.position.y = 6
+    body.name = 'realPlayer'
     body.addEventListener('ready', () => {
       body.setAngularFactor(new THREE.Vector3(0, 0, 0))
     })
 
     body.add(this.camera)
     this.scene.add(body)
-    this.camera.position.set(0, 15, -5)
+    this.camera.position.set(0, 7.5, -2.5)
     this.camera.add(this.crosshair())
 
     return body

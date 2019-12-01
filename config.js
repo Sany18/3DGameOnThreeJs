@@ -9,7 +9,7 @@ let config = {
   moveSpeed: 100.0,
   yourMass: 1.0,
   gravity: 980,
-  jumpHeight: 200,
+  jumpHeight: 180,
 
   debug: true,
   enableShadows: true,
@@ -17,7 +17,7 @@ let config = {
   showTesturesSize: true,
 
   volume: 100,
-  music: 0,
+  music: 50,
 
   chatDbSeparator: '|-=-|',
   chatDbURN: './db/chat.ssv'

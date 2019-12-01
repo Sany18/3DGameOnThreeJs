@@ -1,0 +1,42 @@
+﻿[Arrow]
+Path=Synthwave Normal Select.cur
+
+[UpArrow]
+Path=Synthwave Alt Select.cur
+
+[Wait]
+Path=Synthwave Busy.ani
+
+[SizeNWSE]
+Path=Synthwave Diag Resize 1.cur
+
+[SizeNESW]
+Path=Synthwave Diag Resize 2.cur
+
+[NWPen]
+Path=Synthwave Handwriting.cur
+
+[Help]
+Path=Synthwave Help Select.cur
+
+[SizeWE]
+Path=Synthwave Horizontal Resize.cur
+
+[Hand]
+Path=Synthwave Link Select.cur
+
+[SizeAll]
+Path=Synthwave Move.cur
+
+[Crosshair]
+Path=Synthwave Precision Select.cur
+
+[IBeam]
+Path=Synthwave Text Select.cur
+
+[No]
+Path=Synthwave Unavailable.cur
+
+[AppStarting]
+Path=Synthwave Working.ani
+
