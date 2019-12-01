@@ -2,13 +2,11 @@ export default class Player {
   constructor(camera, scene) {
     this.camera = camera
     this.scene = scene
-    this.player = this.createPlayerModel()
+    this.body = this.createPlayerModel()
     this.connect()
   }
 
   /*get*/
-  getQuaternion = () => this.quaternion
-
   jumpHeight = new THREE.Vector3(0, config.jumpHeight, 0)
   moveForward = false
   moveBackward = false
@@ -36,16 +34,16 @@ export default class Player {
         this.velocity.z -= this.direction.z * config.moveSpeed * 10 * delta }
       if (this.moveLeft || this.moveRight) {
         this.velocity.x -= this.direction.x * config.moveSpeed * 10 * delta }
-      if (this.player._physijs.touches.length != 0 && this.canJump) {
-        this.player.applyCentralImpulse(this.jumpHeight)
+      if (this.body._physijs.touches.length != 0 && this.canJump) {
+        this.body.applyCentralImpulse(this.jumpHeight)
         this.canJump = false }
-      if (this.rotationLeft) { this.player.rotateOnAxis(this.vectorX1, 0.04) }
-      if (this.rotationRight) { this.player.rotateOnAxis(this.vectorX1, -0.04) }
+      if (this.rotationLeft) { this.body.rotateOnAxis(this.vectorX1, 0.04) }
+      if (this.rotationRight) { this.body.rotateOnAxis(this.vectorX1, -0.04) }
 
-      this.player.__dirtyPosition = true
-      this.player.__dirtyRotation = true
-      this.player.translateX(this.velocity.x * delta)
-      this.player.translateZ(this.velocity.z * delta)
+      this.body.__dirtyPosition = true
+      this.body.__dirtyRotation = true
+      this.body.translateX(this.velocity.x * delta)
+      this.body.translateZ(this.velocity.z * delta)
     }
   }
 
@@ -65,8 +63,8 @@ export default class Player {
     this.eulerX.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.eulerX.x))
 
     this.camera.quaternion.setFromEuler(this.eulerX)
-    this.player.quaternion.setFromEuler(this.eulerY)
-    this.player.__dirtyRotation = true
+    this.body.quaternion.setFromEuler(this.eulerY)
+    this.body.__dirtyRotation = true
 
     this.euler.y = this.eulerY.y
     this.euler.x = this.eulerX.x
@@ -86,23 +84,23 @@ export default class Player {
   createPlayerModel = () => {
     let boxGeometry = new THREE.BoxBufferGeometry(10, 20, 5)
     let boxMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, opacity: 1 })
-    let player = new Physijs.BoxMesh(boxGeometry, boxMaterial, config.yourMass)
+    let body = new Physijs.BoxMesh(boxGeometry, boxMaterial, config.yourMass)
 
-    player.castShadow = true
-    player.receiveShadow = true
-    player.position.x = 100
-    player.position.z = 100
-    player.position.y = 50
-    player.addEventListener('ready', () => {
-      player.setAngularFactor(new THREE.Vector3(0, 0, 0))
+    body.castShadow = true
+    body.receiveShadow = true
+    body.position.x = 100
+    body.position.z = 100
+    body.position.y = 50
+    body.addEventListener('ready', () => {
+      body.setAngularFactor(new THREE.Vector3(0, 0, 0))
     })
 
-    player.add(this.camera)
-    this.scene.add(player)
+    body.add(this.camera)
+    this.scene.add(body)
     this.camera.position.set(0, 15, -5)
     this.camera.add(this.crosshair())
 
-    return player
+    return body
   }
 
   crosshair = () => {

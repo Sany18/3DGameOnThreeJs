@@ -33,7 +33,7 @@ const main = () => {
   scene.setGravity(new THREE.Vector3(0, -config.gravity, 0))
 
   /* camera */
-  let camera = new THREE.PerspectiveCamera(
+  window.camera = new THREE.PerspectiveCamera(
     state.camera.angle, state.frame.width() / state.frame.height(),
     state.camera.near, state.camera.far
   )
@@ -99,7 +99,7 @@ const main = () => {
   Skybox(scene)
   Floor(scene)
   Boxes(scene, 1)
-  let player = new Player(camera, scene)
+  window.player = new Player(camera, scene)
   let directionLight = DirectionLight(scene)
 
   scene.fog = new THREE.Fog(0xc20000)
@@ -118,57 +118,22 @@ const main = () => {
   weapon.position.set(2, -1, -2.5)
   camera.add(weapon)
 
-  // let emitter = new THREE.Object3D()
-  // emitter.position.set(2, -1, -5)
-  // weapon.add(emitter)
+  let raycaster = new THREE.Raycaster()
+  addEventListener('click', () => {
+    let position = camera.getWorldPosition(new THREE.Vector3())
+    let direction = camera.getWorldDirection(new THREE.Vector3())
 
-  // let bullets = []
-  // let speed = 500
+    raycaster.set(position, direction)
 
-  window.addEventListener("mousedown", () => {
-    // let plasmaBall = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 4), new THREE.MeshBasicMaterial({ color: 'orange' }))
-
-    // plasmaBall.position.copy(emitter.getWorldPosition(new THREE.Vector3()))
-    // plasmaBall.quaternion.copy(player.getQuaternion())
-    // bullets.push(plasmaBall)
-    // scene.add(plasmaBall)
+    raycaster.intersectObjects(scene.children, true).forEach(i => {
+      if (i.object.name == 'box') console.log('hit!')
+    })
   })
-
-
-
-    window.raycaster = new THREE.Raycaster();
-
-    // window.addEventListener( 'mousemove', onMouseMove, false );
-
-    window.casterHelper = new THREE.ArrowHelper(raycaster.ray.direction, raycaster.ray.origin, 300, 0xff0000)
-    scene.add(casterHelper)
-
-
-  //   var terrain_geometry = makeTile(0.1, 40);
-  // var terrain_material = new THREE.MeshLambertMaterial({color: new THREE.Color(0.9, 0.55, 0.4)});
-  // var terrain = new THREE.Mesh(terrain_geometry, terrain_material);
-  // terrain.position.x = -2;
-  // terrain.position.z = -2;
-  // terrain.updateMatrixWorld(true);
-  // scene.add(terrain);
-
-
-
-
 
   let pause = false
 
   function action(time, delta) {
     if (config.showFps) stats.showFps().showMemory()
-
-      raycaster.setFromCamera(new THREE.Vector3(5000,500,500), camera)
-      // var intersects = raycaster.intersectObjects(scene.children)
-      // for ( var i = 0; i < intersects.length; i++ ) {
-      //   intersects[ i ].object.material.color.set(0xff0000)
-      // }
-
-    // bullets.forEach(b => {b.translateZ(-speed * delta)})
-    // objects.forEach(box => { box.rotation.y += 0.005 })
 
     player.control()
   }

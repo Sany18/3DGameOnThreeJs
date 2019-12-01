@@ -9,6 +9,7 @@ export default (scene, amount = 5) => {
       let box = new Physijs.BoxMesh(boxGeometry, boxMaterial, 1)
       box.castShadow = true
       box.receiveShadow = true
+      box.name = 'box'
 
       box.position.x = Math.floor(Math.random() * 20 - 10) * 5
       box.position.z = Math.floor(Math.random() * 20 - 10) * 5
