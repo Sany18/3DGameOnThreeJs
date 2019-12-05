@@ -1,6 +1,6 @@
 let config = {
-  serverPort: 81,
-  wsPort: 82,
+  serverPort: 80,
+  wsPort: 8081,
 
   shadowResolution: 2048,
   resolutionMultiplier: 1,
