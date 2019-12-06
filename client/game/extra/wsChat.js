@@ -18,17 +18,7 @@ ws.onerror = error => {
 ws.onopen = () => {
   send.isOpen = true
 
-  fetch(config.chatDbURN)
-    .then(response => response.text())
-    .then(body => {
-      const messages = body.split('\n');
-      for (var i = 0; i < messages.length - 1; ++i) {
-        let message = messages[i].split(config.chatDbSeparator)
-        message = { message: message[1], timestamp: message[0] }
-        addDataToChatWindow(message)
-      }
-    })
-    .then(addSystemMessageToChatWindow('[ws status]' + 'Соединение установлено.'))
+  addSystemMessageToChatWindow('[ws status]' + 'Соединение установлено.')
 }
 
 ws.onmessage = event => {
@@ -106,8 +96,8 @@ function addSystemMessageToChatWindow(data) {
 
 function localTimeFormat(data) {
   const d = new Date(data.timestamp);
-  const localTime = `${d.getFullYear()}-${zr(d.getMonth()+1)}-${zr(d.getDate())} `+
-                    `${d.getHours()}:${zr(d.getMinutes())}:${zr(d.getSeconds())} `
+  const localTime = `${d.getFullYear()}/${zr(d.getMonth()+1)}/${zr(d.getDate())} `+
+                    `${d.getHours()}:${zr(d.getMinutes())} `
   return localTime;
 }
 

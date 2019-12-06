@@ -1,5 +1,5 @@
 import '../libs/three/three.min.js'
-import '../config.js'
+import '../_config.js'
 import './globalFunctions.js'
 import './extra/other.js'
 import './extra/console.js'

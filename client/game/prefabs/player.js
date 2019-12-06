@@ -88,9 +88,9 @@ export default class Player {
 
     body.castShadow = true
     body.receiveShadow = true
-    body.position.x = 50
-    body.position.z = 50
-    body.position.y = 6
+    body.position.x = 0
+    body.position.z = -50
+    body.position.y = 5.1
     body.name = 'realPlayer'
     body.addEventListener('ready', () => {
       body.setAngularFactor(new THREE.Vector3(0, 0, 0))

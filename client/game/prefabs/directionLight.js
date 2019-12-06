@@ -1,6 +1,6 @@
 export default (scene, camera) => {
-  let light = new THREE.DirectionalLight(0xffffff, 0.7)
-  let backLight = new THREE.DirectionalLight(0xffffff, 0.3)
+  let light = new THREE.DirectionalLight(0xffffff, 1.3)
+  let backLight = new THREE.DirectionalLight(0xffffff, 0.5)
   let lightBoxSize = 250
   let state = {
     position: { x: 50, y: 200, z: -200 },

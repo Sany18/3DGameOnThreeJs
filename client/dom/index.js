@@ -43,7 +43,7 @@ function loadGameTo(queryElem) {
 
   let scriptTag = d.createElement('script')
   scriptTag.setAttribute('type', 'module')
-  scriptTag.setAttribute('src', './game/game.js')
+  scriptTag.setAttribute('src', './game.js')
   scriptTag.setAttribute('class', 'game-dark-side game')
   d.head.appendChild(scriptTag)
 

@@ -1,9 +1,9 @@
 console.time('Scripts loaded')
 import { Player, DirectionLight, Floor, Skybox,
          Weapon, Boxes, RightHand, AnotherPlayer,
-         Walls } from './prefabs/index.js'
-import Stats from '../libs/stats.js'
-import './index.js'
+         Walls } from './game/prefabs/index.js'
+import Stats from './libs/stats.js'
+import './game/index.js'
 
 const main = () => {
   /**************/
@@ -71,7 +71,7 @@ const main = () => {
   // let hblur = new THREE.ShaderPass(THREE.HorizontalBlurShader)
   // let vblur = new THREE.ShaderPass(THREE.VerticalBlurShader)
   // vblur.renderToScreen = true
-  // composer.addPass(hblur)
+  // composer.addPass(hblu, '[test player]'r)
   // composer.addPass(vblur)
 
   /* film */
@@ -106,8 +106,6 @@ const main = () => {
     // filmPass.uniforms.grayscale.value = state
   }
 
-  // window.onbeforeunload = function() { return '' }
-
   addEventListener('unload', () => {
     send(JSON.stringify({ __destroy__: myId }))
     send('bye ' + myId)
@@ -117,21 +115,37 @@ const main = () => {
   /* After initialize */
   /********************/
 
+  /* music */
+  let audioLoader = new THREE.AudioLoader()
+  audioLoader.load(assets("music/Tommy - Flyin'.mp3"), buffer => {
+    sound.setBuffer(buffer)
+    sound.setLoop(true)
+    sound.setVolume(0)
+    sound.play()
+  })
+
   /* objects */
   Skybox(scene)
   Floor(scene)
   Boxes(scene, 1)
   DirectionLight(scene)
-  Weapon(camera)
   Walls(scene)
+  let weapon = Weapon(camera, listener)
   scene.fog = new THREE.Fog(0xc20000)
 
   window.player = new Player(camera, scene)
+
+  let testPlayer = new AnotherPlayer(scene, '[test player]')
 
   let raycaster = new THREE.Raycaster()
   addEventListener('click', () => {
     let position = camera.getWorldPosition(new THREE.Vector3())
     let direction = camera.getWorldDirection(new THREE.Vector3())
+
+    if (isSoundsEnable) {
+      weapon.sound.isPlaying && weapon.sound.stop()
+      weapon.sound.play()
+    }
 
     raycaster.set(position, direction)
 
@@ -142,15 +156,6 @@ const main = () => {
         send('i heat ' + i.object.networkId)
       }
     })
-  })
-
-  /* music */
-  let audioLoader = new THREE.AudioLoader()
-  audioLoader.load(assets("music/Tommy - Flyin'.mp3"), buffer => {
-    sound.setBuffer(buffer)
-    sound.setLoop(true)
-    sound.setVolume(0)
-    sound.play()
   })
 
   /* network */
@@ -199,6 +204,8 @@ const main = () => {
 
     sendOwnCoordinates()
     updateNetworkPlayers()
+
+    testPlayer.rotation.y += .02
 
     player.control()
   }
