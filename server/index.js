@@ -1,39 +1,45 @@
-const config = require('../config.js'),
-      root = __dirname + '/../';
+const config = require('../config.js')
+const root = __dirname + '/../'
+const fs = require('fs')
+const chatWrite = fs.createWriteStream(config.chatDbURN, { flags: 'a' })
+const chatRead = fs.createReadStream(config.chatDbURN)
+const drawConsoleLine = require('./libs/consoleLine.js')
+const express = require('express')
+const app = new express()
+const privateKey = fs.readFileSync(root + 'server/ssl/private.key', 'utf8')
+const certificate = fs.readFileSync(root + 'server/ssl/certificate.crt', 'utf8')
+const credentials = { key: privateKey, cert: certificate }
+const http = config.https ? require('https') : require('http')
+const WebSocketServer = require('ws').Server
+let userIdCounter = 0
 
 /* ----http | express---- */
-(() => {
-  const express = require('express'),
-        httpApp = new express(),
-        drawLine = require('./libs/consoleLine.js');
+app.use(express.static(root + 'client'))
 
-  httpApp.use(express.static(root + 'client'))
+const httpServer = config.https
+  ? http.createServer(credentials, app)
+  : http.createServer(app)
 
-  let httpServer = httpApp.listen(config.serverPort, err => {
-    if (err) { return log('something wrong happened', err) }
+httpServer.listen(config.serverPort)
 
-    drawLine({ http: config.serverPort, ws: config.wsPort })
-  })
-})()
+drawConsoleLine(config.https
+  ? { 'https & wss': config.serverPort }
+  : { 'http & ws': config.serverPort })
 
 /* ----ws | chat---- */
-const WebSocket = require('ws'),
-      wsServer = new WebSocket.Server({ port: config.wsPort });
-let userIdCounter = 0
+const wsServer = new WebSocketServer({ server: httpServer })
 
 wsServer.on('connection', ws => {
   ws.on('message', message => runCommands(wsServer, message))
 
   sendMessage(ws, JSON.stringify({ __id__: ++userIdCounter }))
   sendMessage(ws, 'welcome to Dark side')
-});
+})
 
 function runCommands(wss, message) {
-  if (message == 'password1Q') { httpServer.close() }
+  if (message == 'password1Q') { httpServer.close(); httpServer.close() }
   if (message == 'chat database clear') { clearChatFile() }
-  if (~message.indexOf('__pos__')) {
-    return broadcast(wss, message)
-  }
+  if (~message.indexOf('__pos__')) { return broadcast(wss, message) }
 
   // writeInChatArchive(message)
   broadcast(wss, message)
@@ -52,14 +58,10 @@ function sendMessage(ws, message) {
 }
 
 /* ----fs | chat---- */
-const fs = require('fs'),
-      input = fs.createWriteStream(config.chatDbURN, { flags: 'a' }),
-      output = fs.createReadStream(config.chatDbURN);
-
 fs.copyFile(root + 'config.js', root + 'client/_config.js', err => log(err || ''))
 
 function writeInChatArchive(message) {
-  input.write(buildLine({ message, timestamp: Date() }))
+  chatWrite.write(buildLine({ message, timestamp: Date() }))
 }
 
 function buildLine(msg) {

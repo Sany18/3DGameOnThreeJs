@@ -8,7 +8,7 @@ export default (camera, listener) => {
   let audioLoader = new THREE.AudioLoader()
   audioLoader.load(assets('sounds/shotgun-shot.ogg'), buffer => {
     sound.setBuffer(buffer)
-    sound.setVolume(config.volume * 0.01 / 1.5)
+    sound.setVolume(config.sounds / 100)
   })
 
   weapon.sound = sound

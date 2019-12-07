@@ -3,10 +3,5 @@
 - npm i
 - npm start
 
-http://localhost:6020
-
-#### if something wrong
-index.php
-```php
-<?php header('Location: /index.html');?>
-```
+config: ./config.js
+for dev: debug: true

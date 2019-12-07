@@ -1,23 +1,24 @@
 let config = {
-  serverPort: 80,
-  wsPort: 8081,
+  debug: true,
+
+  serverPort: 8080,
+  https: false,
 
   shadowResolution: 2048,
   resolutionMultiplier: 1,
   antialias: false,
+  enableShadows: true,
 
   moveSpeed: 100.0,
   yourMass: 1.0,
   gravity: 980,
   jumpHeight: 180,
 
-  debug: true,
-  enableShadows: true,
   showFps: true,
   showTesturesSize: true,
   showNamesOverPlayer: true,
 
-  volume: 100,
+  sounds: 99,
   music: 50,
 
   chatDbSeparator: '|-=-|',
@@ -26,7 +27,6 @@ let config = {
 
 try {
   if (window) {
-    config['API_WS'] = `ws://${location.hostname}:${config.wsPort}`
     config['imagePrefix'] = `${origin}/assets/textures/`
     config['threeJsVersion'] = THREE.getVersion
 

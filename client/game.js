@@ -40,7 +40,7 @@ const main = () => {
   )
 
   let listener = new THREE.AudioListener()
-  let sound = new THREE.Audio(listener) // background music
+  let music = new THREE.Audio(listener)
   camera.add(listener)
 
   /* renderer */
@@ -86,17 +86,26 @@ const main = () => {
     composer.setSize(state.frame.width(), state.frame.height())
   }, false)
 
+  let isMusicEnable = false
+  document.querySelector('.music').addEventListener('click', () => {
+    isMusicEnable = !isMusicEnable
+    
+    if (isMusicEnable) {
+      document.querySelector('.music').innerHTML = 'Music on'
+      music.setVolume(config.music / 100)
+    } else {
+      document.querySelector('.music').innerHTML = 'Music off'
+      music.setVolume(0)
+    }
+  })
+
   let isSoundsEnable = false
   document.querySelector('.sounds').addEventListener('click', () => {
     isSoundsEnable = !isSoundsEnable
     
-    if (isSoundsEnable) {
-      document.querySelector('.sounds').innerHTML = 'Sounds on'
-      sound.setVolume(config.music / 100)
-    } else {
-      document.querySelector('.sounds').innerHTML = 'Sounds off'
-      sound.setVolume(0)
-    }
+    isSoundsEnable
+     ? document.querySelector('.sounds').innerHTML = 'Sounds on'
+     : document.querySelector('.sounds').innerHTML = 'Sounds off'
   })
 
   globalFunctions.onBlocker = state => {
@@ -116,12 +125,12 @@ const main = () => {
   /********************/
 
   /* music */
-  let audioLoader = new THREE.AudioLoader()
-  audioLoader.load(assets("music/Tommy - Flyin'.mp3"), buffer => {
-    sound.setBuffer(buffer)
-    sound.setLoop(true)
-    sound.setVolume(0)
-    sound.play()
+  let musicLoader = new THREE.AudioLoader()
+  musicLoader.load(assets("music/Tommy - Flyin'.mp3"), buffer => {
+    music.setBuffer(buffer)
+    music.setLoop(true)
+    music.setVolume(0)
+    music.play()
   })
 
   /* objects */

@@ -1,4 +1,7 @@
-window.ws = new WebSocket(window.config.API_WS)
+let socketEndpoint = location.protocol == 'https:' ? 'wss://' : 'ws://'
+    socketEndpoint += location.host
+
+window.ws = new WebSocket(socketEndpoint)
 window.send = ws.send.bind(ws)
 send.isOpen = false
 

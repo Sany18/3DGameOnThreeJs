@@ -80,7 +80,7 @@ body {
 #console {
   position: absolute;
   height: 40vh;
-  width: calc(100% - 250px);
+  width: calc(100% - 200px);
   top: -40vh;
   background: rgba(50, 50, 50, 0.8);
   color: white;
