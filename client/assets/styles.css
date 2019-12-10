@@ -13,174 +13,44 @@ body {
   font-family: Code;
   margin: unset;
   background: black;
-  cursor: url('cursor/Synthwave Normal Select.cur'), auto;
+  cursor: url('cursor/Synthwave Normal Select.cur'), auto;}
+
+#content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  overflow: hidden;
+  border: none;
 }
 
-.button:hover { color: grey; }
-
-.button {
-  cursor: url('cursor/Synthwave Link Select.cur'), pointer;
-  user-select: none;
+.loader {
+  display: block;
+  position: absolute;
+  height: 200px;
+  width: 200px;
+  left: calc(50% - 100px);
+  top: calc(50% - 50px);
+  transform: translate(-50%, -50%);
 }
 
 .menu {
   color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   padding: 8px;
   width: 200px;
   height: 100vh;
   border: 1px solid;
 }
 
-.system { border: 1px dashed white; }
-.system-info {}
-.youtube { width: 182px; height: 120px; }
-
-.content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
-  overflow: hidden;
+.menu__info { border: 1px dashed white; }
+.menu__item:not(:first-child) { margin-top: 1em; }
+.menu__link {
+  color: white;
+  display: block;
 }
 
-#blocker {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-
-  position: absolute;
-  top: 0; left: 0;
-  width: calc(100% - 200px);
-  height: 100%;
+.menu__button:hover { color: grey; }
+.menu__button {
   cursor: url('cursor/Synthwave Link Select.cur'), pointer;
-}
-
-#blocker span {
-  position: absolute;
-  right: 0;
-  bottom: 25px;
-  width: 100%;
-  color: #444;
-  font-size: 50px;
-  text-align: center;
   user-select: none;
-  transition: .3s;
-}
-
-#blocker span:hover {
-  color: #222;
-  background: #555;
-  transition: .3s;
-}
-
-#console {
-  position: absolute;
-  height: 40vh;
-  width: calc(100% - 200px);
-  top: -40vh;
-  background: rgba(50, 50, 50, 0.8);
-  color: white;
-  display: flex;
-  flex-direction: column-reverse;
-  transition: 0.3s;
-  z-index: 1;
-}
-
-#console input {
-  width: 100%;
-  height: 23px;
-  padding-left: 3px;
-  background: none;
-  border: none;
-  outline: none;
-  color: white;
-  background: rgba(100, 100, 100, 0.8);
-  cursor: url('cursor/Synthwave Text Select.cur'), text;
-}
-
-.visible { top: 0vh !important; }
-
-#chat {
-  position: absolute;
-  left: 5px;
-  bottom: 5px;
-  max-height: 300px;
-  width: 25vw;
-  transition: .3s;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-.chat-messages-field {
-  color: white;
-  flex: 1;
-  overflow-y: auto;
-  padding: 5px;
-  box-sizing: border-box;
-}
-
-.chat-messages-field::-webkit-scrollbar {
-  width: 0px;
-}
-
-.chat-messages-field::-webkit-scrollbar-thumb {
-  background: #666;
-  border-radius: 20px;
-}
-
-.chat-messages-field::-webkit-scrollbar-track {
-  background: #000000cc;
-  border-radius: 20px;
-}
-
-.chat-message { opacity: .1; }
-.chat-timestamp { color: yellow; }
-
-.chat-input {
-  width: 100%;
-  background: grey;
-  outline: none;
-  border: 0px solid black;
-  padding: 3px;
-  border-radius: 3px;
-  font-family: "Courier New";
-  font-weight: 600;
-  background: #00000000;
-  color: white;
-  opacity: .1;
-  box-sizing: border-box;
-  cursor: url('cursor/Synthwave Text Select.cur'), text;
-}
-
-#chat:hover, #chat.active {
-  background: #000000c0;
-  transition: .3s;
-}
-
-#chat:hover .chat-input,
-#chat.active .chat-input {
-  opacity: 1;
-  transition: .3s;
-}
-
-#chat:hover .chat-messages-field::-webkit-scrollbar,
-#chat.active .chat-messages-field::-webkit-scrollbar {
-  width: 10px;
-}
-
-#chat:hover .chat-message, #chat.active .chat-message {
-  opacity: 1;
-  transition: .3s;
-}
-
-#chat:hover .chat-input, #chat.active .chat-input {
-  background: #ffffff30;
-  border: 1px solid black;
-  transition: .3s;
 }

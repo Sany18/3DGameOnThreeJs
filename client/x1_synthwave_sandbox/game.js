@@ -2,7 +2,7 @@ console.time('Scripts loaded')
 import { Player, DirectionLight, Floor, Skybox,
          Weapon, Boxes, RightHand, AnotherPlayer,
          Walls } from './game/prefabs/index.js'
-import Stats from './libs/stats.js'
+import Stats from '../libs/stats.js'
 import './game/index.js'
 
 const main = () => {
@@ -19,11 +19,6 @@ const main = () => {
       angle: 75,
       far: 1000,
       near: .1
-    },
-    frame: {
-      elem: document.querySelector('.content'),
-      width: () => document.querySelector('.content').offsetWidth,
-      height: () => (document.querySelector('.content').offsetHeight - 5)
     }
   }
 
@@ -35,7 +30,7 @@ const main = () => {
 
   /* camera */
   let camera = new THREE.PerspectiveCamera(
-    state.camera.angle, state.frame.width() / state.frame.height(),
+    state.camera.angle, window.innerWidth / window.innerHeight,
     state.camera.near, state.camera.far
   )
 
@@ -46,7 +41,7 @@ const main = () => {
   /* renderer */
   let renderer = new THREE.WebGLRenderer({ antialias: config.antialias })
   renderer.setPixelRatio(devicePixelRatio * config.resolutionMultiplier)
-  renderer.setSize(state.frame.width(), state.frame.height())
+  renderer.setSize(window.innerWidth, window.innerHeight)
   renderer.shadowMap.enabled = true
   renderer.shadowMapSoft = true
   renderer.shadowCameraNear = 3
@@ -56,7 +51,7 @@ const main = () => {
   renderer.shadowMapDarkness = .5
   renderer.shadowMapWidth = 1024
   renderer.shadowMapHeight = 1024
-  state.frame.elem.appendChild(renderer.domElement)
+  document.body.appendChild(renderer.domElement)
 
   /* filters / shaders */
   let composer = new THREE.EffectComposer(renderer)
@@ -80,33 +75,33 @@ const main = () => {
 
   /* global listeners */
   addEventListener('resize', () => {
-    camera.aspect = state.frame.width() / state.frame.height()
+    camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
-    renderer.setSize(state.frame.width(), state.frame.height())
-    composer.setSize(state.frame.width(), state.frame.height())
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    composer.setSize(window.innerWidth, window.innerHeight)
   }, false)
 
-  let isMusicEnable = false
-  document.querySelector('.music').addEventListener('click', () => {
-    isMusicEnable = !isMusicEnable
-    
-    if (isMusicEnable) {
-      document.querySelector('.music').innerHTML = 'Music on'
-      music.setVolume(config.music / 100)
-    } else {
-      document.querySelector('.music').innerHTML = 'Music off'
-      music.setVolume(0)
-    }
-  })
+  // let isMusicEnable = false
+  // document.querySelector('.music').addEventListener('click', () => {
+  //   isMusicEnable = !isMusicEnable
+  //
+  //   if (isMusicEnable) {
+  //     document.querySelector('.music').innerHTML = 'Music on'
+  //     music.setVolume(config.music / 100)
+  //   } else {
+  //     document.querySelector('.music').innerHTML = 'Music off'
+  //     music.setVolume(0)
+  //   }
+  // })
 
-  let isSoundsEnable = false
-  document.querySelector('.sounds').addEventListener('click', () => {
-    isSoundsEnable = !isSoundsEnable
-    
-    isSoundsEnable
-     ? document.querySelector('.sounds').innerHTML = 'Sounds on'
-     : document.querySelector('.sounds').innerHTML = 'Sounds off'
-  })
+  // let isSoundsEnable = false
+  // document.querySelector('.sounds').addEventListener('click', () => {
+  //   isSoundsEnable = !isSoundsEnable
+  //
+  //   isSoundsEnable
+  //    ? document.querySelector('.sounds').innerHTML = 'Sounds on'
+  //    : document.querySelector('.sounds').innerHTML = 'Sounds off'
+  // })
 
   globalFunctions.onBlocker = state => {
     // glitchPass.enabled = state
@@ -151,10 +146,10 @@ const main = () => {
     let position = camera.getWorldPosition(new THREE.Vector3())
     let direction = camera.getWorldDirection(new THREE.Vector3())
 
-    if (isSoundsEnable) {
-      weapon.sound.isPlaying && weapon.sound.stop()
-      weapon.sound.play()
-    }
+    // if (isSoundsEnable) {
+    //   weapon.sound.isPlaying && weapon.sound.stop()
+    //   weapon.sound.play()
+    // }
 
     raycaster.set(position, direction)
 
@@ -185,7 +180,7 @@ const main = () => {
     }
 
     const players = Object.keys(networkPlayers).length
-    document.querySelector('#players_online').innerHTML = players
+    parent.document.querySelector('#players_online').innerHTML = players
   }
 
   function setNetworkPlayerPosition(__id__, pos, qua) {

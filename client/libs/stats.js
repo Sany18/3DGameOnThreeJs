@@ -4,9 +4,9 @@ export default class Stats {
   fps = 0
   delta = 0
   updatesPerSecond = 60 / 5
-  fpsElement = document.querySelector('#fps')
-  memoryElement = document.querySelector('#memory')
-  
+  fpsElement = parent.document.querySelector('#fps')
+  memoryElement = parent.document.querySelector('#memory')
+
   showFps() {
     if (++this.counter != this.updatesPerSecond) { return this } else this.counter = 0;
 

@@ -5,27 +5,33 @@
   <link rel="stylesheet" type="text/css" href="./assets/styles.css">
   <link rel="icon" type="image/png" href="./assets/favicon.ico"/>
   <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <title>Dark</title>
-  <!-- Scripts -->
-  <script type="module" src="./dom/index.js"></script>
+  <title>Anymore</title>
+  <script>
+    addEventListener('load', () => {
+      name = 'main window'
+      window.content = document.getElementById('content').contentWindow
+
+      document.getElementById('content').addEventListener('load', event => {})
+    })
+  </script>
 </head>
 <body>
-  <div class="content"></div>
+  <iframe id="content" name="content" src="/unloaded_content.html"></iframe>
 
   <nav class="menu">
-    <div class="system">
-      <div class="system-info">
-        <div><span>FPS: </span><span id="fps">-</span></div>
-        <div><span>Memory: </span><span id="memory">-</span></div>
-        <div><span>Players: </span><span id="players_online">-</span></div>
-      </div>
+    <div class="menu__item menu__info">
+      <div><span>FPS: </span><span id="fps">-</span></div>
+      <div><span>Memory: </span><span id="memory">-</span></div>
+      <div><span>Players: </span><span id="players_online">-</span></div>
     </div>
-    <div class="menu-items">
-      <div class="sounds button">Sounds off</div>
-      <div class="music button">Music off</div>
-      <div class="pause button">Pause</div>
-      <div class="load-game button">Load Dark Side</div>
-      <div class="unload button">Unload</div>
+    <div class="menu__item menu__buttons">
+      <div class="sounds menu__button">Sounds off</div>
+      <div class="music menu__button">Music off</div>
+      <div class="pause menu__button">Pause</div>
+    </div>
+    <div class="menu__item menu__links">
+      <a class="menu__link" href="/x1_synthwave_sandbox" target="content">Synthwave shooter</a>
+      <a class="menu__link" href="/unloaded_content.html" target="content">unload</a>
     </div>
   </nav>
 </body>
