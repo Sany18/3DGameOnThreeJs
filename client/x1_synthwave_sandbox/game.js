@@ -1,4 +1,3 @@
-console.time('Scripts loaded')
 import { Player, DirectionLight, Floor, Skybox,
          Weapon, Boxes, RightHand, AnotherPlayer,
          Walls } from './game/prefabs/index.js'
@@ -103,6 +102,7 @@ const main = () => {
   //    : document.querySelector('.sounds').innerHTML = 'Sounds off'
   // })
 
+  window.globalFunctions = {}
   globalFunctions.onBlocker = state => {
     // glitchPass.enabled = state
     // hblur.enabled = state
@@ -221,8 +221,6 @@ const main = () => {
 
     if (!pause) requestAnimationFrame(animate)
   }()
-
-  console.timeEnd('Scripts loaded')
 }
 
 main()

@@ -2,19 +2,6 @@ let counter = 0
 let sizeCounter = 0
 let totalSize = 0
 
-window.globalFunctions = {
-  unload: () => {
-    game = null
-    THREE = null
-    assets = null
-    log = null
-    config = null
-    globalFunctions = null
-
-    console.log('[unloaded]')
-  }
-}
-
 THREE.loadBasicTexture = address => {
   const url = config.imagePrefix + address
 

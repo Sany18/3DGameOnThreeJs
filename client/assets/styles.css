@@ -13,7 +13,8 @@ body {
   font-family: Code;
   margin: unset;
   background: black;
-  cursor: url('cursor/Synthwave Normal Select.cur'), auto;}
+  cursor: url('cursor/Synthwave Normal Select.cur'), auto;
+}
 
 #content {
   display: flex;
