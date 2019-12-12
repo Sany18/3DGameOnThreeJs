@@ -1,4 +1,4 @@
-import { DirectionLight, Floor } from './objects/index.js'
+import { DirectionLight, Floor, FlyCameraControl, Skybox } from './objects/index.js'
 import Stats from '../libs/stats.js'
 import './imports.js'
 
@@ -20,16 +20,12 @@ const main = () => {
   }
 
   /* camera */
-  window.camera = new THREE.PerspectiveCamera(
+  let camera = new THREE.PerspectiveCamera(
     state.camera.angle, window.innerWidth / window.innerHeight,
     state.camera.near, state.camera.far
   )
-  camera.y = 1
-  scene.add(camera)
-
-  let listener = new THREE.AudioListener()
-  let music = new THREE.Audio(listener)
-  camera.add(listener)
+  camera.position.y = 5
+  camera.position.z = 20
 
   /* renderer */
   let renderer = new THREE.WebGLRenderer({ antialias: config.antialias })
@@ -50,21 +46,16 @@ const main = () => {
   let composer = new THREE.EffectComposer(renderer)
   composer.addPass(new THREE.RenderPass(scene, camera))
 
-  /* glitches */
-  // let glitchPass = new THREE.GlitchPass()
-  // composer.addPass(glitchPass)
-  // glitchPass.goWild = false
-
   /* blur */
   // let hblur = new THREE.ShaderPass(THREE.HorizontalBlurShader)
   // let vblur = new THREE.ShaderPass(THREE.VerticalBlurShader)
   // vblur.renderToScreen = true
-  // composer.addPass(hblu, '[test player]'r)
+  // composer.addPass(hblur)
   // composer.addPass(vblur)
 
   /* film */
-  // let filmPass = new THREE.FilmPass(1, .2, 648, false)
-  // composer.addPass(filmPass)
+  let filmPass = new THREE.FilmPass(1, .2, 648, false)
+  composer.addPass(filmPass)
 
   /* global listeners */
   addEventListener('resize', () => {
@@ -74,54 +65,61 @@ const main = () => {
     composer.setSize(window.innerWidth, window.innerHeight)
   }, false)
 
-  // let isMusicEnable = false
-  // document.querySelector('.music').addEventListener('click', () => {
-  //   isMusicEnable = !isMusicEnable
-  //
-  //   if (isMusicEnable) {
-  //     document.querySelector('.music').innerHTML = 'Music on'
-  //     music.setVolume(config.music / 100)
-  //   } else {
-  //     document.querySelector('.music').innerHTML = 'Music off'
-  //     music.setVolume(0)
-  //   }
-  // })
 
-  // let isSoundsEnable = false
-  // document.querySelector('.sounds').addEventListener('click', () => {
-  //   isSoundsEnable = !isSoundsEnable
-  //
-  //   isSoundsEnable
-  //    ? document.querySelector('.sounds').innerHTML = 'Sounds on'
-  //    : document.querySelector('.sounds').innerHTML = 'Sounds off'
-  // })
+  /* analyser */
+  // const player = document.getElementById('player')
+
+  let analyser, dataArray = false
+  const handleSuccess = stream => {
+    const context = new AudioContext()
+    const source = context.createMediaStreamSource(stream)
+    analyser = context.createAnalyser()
+
+    source.connect(analyser)
+    analyser.connect(context.destination)
+    analyser.fftSize = 64
+
+    const bufferLength = analyser.frequencyBinCount
+    dataArray = new Uint8Array(bufferLength)
+  }
+
+  const updateVisualiser = () => {
+    if (!dataArray) { return }
+
+    analyser.getByteFrequencyData(dataArray)
+
+    for (let i = 0; i < dataArray.length; i++) {
+      line.geometry.vertices[i].y = dataArray[i] / 10
+    }
+
+    line.geometry.verticesNeedUpdate = true
+  }
+
+  navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+    .then(handleSuccess)
 
   /********************/
   /* After initialize */
   /********************/
 
-  /* music */
-  let musicLoader = new THREE.AudioLoader()
-  musicLoader.load(assets("music/Tommy - Flyin'.mp3"), buffer => {
-    music.setBuffer(buffer)
-    music.setLoop(true)
-    music.setVolume(0)
-    music.play()
-  })
-
   /* objects */
-  Floor(scene)
+  window.line = Floor(scene)
   DirectionLight(scene)
+  Skybox(scene)
+  const flyCamera = FlyCameraControl(camera)
   scene.fog = new THREE.Fog(0xc20000)
 
   /* action */
   function action(time, delta) {
-    if (config.showFps) stats.showFps().showMemory()
+    flyCamera(delta)
+    updateVisualiser()
+    // if (config.showFps) stats.showFps().showMemory()
   }
 
   !function animate(time, delta = clock.getDelta()) {
     action(time, delta)
     composer.render()
+    requestAnimationFrame(animate)
   }()
 }
 
