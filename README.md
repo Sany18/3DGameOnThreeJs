@@ -4,3 +4,5 @@
 - npm start
 
 config: ./config.js
+
+    "start": "concurrently \"react-scripts start\" \"node ./backend/index
