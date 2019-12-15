@@ -4,4 +4,3 @@
 - npm start
 
 config: ./config.js
-for dev: debug: true

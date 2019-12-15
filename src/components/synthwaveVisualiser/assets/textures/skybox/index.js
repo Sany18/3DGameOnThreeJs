@@ -1,0 +1,6 @@
+export { default as T1 } from './1.jpg'
+export { default as T2 } from './2.jpg'
+export { default as T3 } from './3.jpg'
+export { default as T4 } from './4.jpg'
+export { default as T5 } from './5.jpg'
+export { default as T6 } from './6.jpg'

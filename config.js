@@ -1,7 +1,7 @@
 let config = {
   debug: true,
 
-  serverPort: 8083,
+  serverPort: 8081,
   https: false,
 
   shadowResolution: 2048,
@@ -22,17 +22,17 @@ let config = {
   music: 50,
 
   chatDbSeparator: '|-=-|',
-  chatDbURN: './server/db/chat.ssv'
+  chatDbURN: './backend/db/chat.ssv'
 }
 
 try {
   if (window) {
-    config['imagePrefix'] = `${origin}/x1_synthwave_sandbox/assets/textures/`
+    config['imagePrefix'] = `${origin}/assets/textures/`
     config['threeJsVersion'] = THREE.getVersion
 
     config.debug && console.info('Debug mode on')
 
-    window.assets = addr => `${origin}/x1_synthwave_sandbox/assets/${addr}`
+    window.assets = addr => `${origin}/assets/${addr}`
     window.log = console.log
     window.config = config
   }
