@@ -8,15 +8,17 @@
 * { box-sizing: border-box; }
 
 body {
+  font-family: 'Press Start 2P';
+  line-height: 2em;
   font-size: .5cm;
   display: flex;
-  font-family: Code;
   margin: unset;
+  cursor: url('./assets/cursor/cursor.svg'), default;
   background: black;
   color: white;
   width: 100vw;
   height: 100vh;
-  cursor: url('./assets/cursor/Synthwave_Normal_Select.cur'), auto;
+  overflow: hidden;
 }
 
 #root {

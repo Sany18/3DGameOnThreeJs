@@ -1,3 +1,13 @@
+.cursors-circle {
+  position: absolute;
+  background-color: #fff4;
+  width: .3cm;
+  height: .3cm;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+}
+
 .main-navigation {
   position: fixed;
   width: 100%;
@@ -8,11 +18,12 @@
   flex-direction: column;
 
   &__link {
+    background: #12121212;
     color: white;
     text-decoration: none;
-    cursor: url('../assets/cursor/Synthwave Link Select.cur'), auto;
     opacity: .3;
     transition: .5s;
+    cursor: inherit;
 
     &:hover {
       opacity: 1;

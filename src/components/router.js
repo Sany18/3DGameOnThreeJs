@@ -5,7 +5,6 @@ import Main from './main'
 import SynthwaveVisualiser from './synthwaveVisualiser'
 // import Shooter from './shooter'
 
-
 const App = () => {
   return (
     <Switch>

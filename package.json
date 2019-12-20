@@ -5,6 +5,12 @@
   "private": true,
   "license": "ISC",
   "author": "Hoxz",
+  "scripts": {
+    "start": "concurrently \"react-scripts start\" \"node ./backend/index\"",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
   "keywords": [
     "tree.js",
     "3D",
@@ -24,12 +30,6 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.3.0",
     "three": "^0.111.0"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
