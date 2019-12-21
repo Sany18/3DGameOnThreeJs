@@ -1,34 +1,27 @@
 import * as THREE from 'three'
+import FloorMesh from '../assets/textures/floor-mesh.png'
 
-export default (scene, camera) => {
+export default scene => {
   const state = {
-    planeSize: 400,
-    repeats: 100,
-    scale: 20,
-    wireframe: true,
-    points: 32
+    repeatTexture: 100,
+    size: 100
   }
 
-  const leftGrid = new THREE.GridHelper(state.planeSize, state.repeats, 0x6A0055, 0x6A0055)
-  leftGrid.position.x = -state.planeSize / 2 - 5
-  leftGrid.position.z = -state.planeSize / 2 + 20
-  scene.add(leftGrid)
+  const texture = new THREE.TextureLoader().load(FloorMesh)
+  texture.wrapS = THREE.RepeatWrapping
+  texture.wrapT = THREE.RepeatWrapping
+  texture.repeat.set(state.repeatTexture, state.repeatTexture)
 
-  const rightGrid = new THREE.GridHelper(state.planeSize, state.repeats, 0x6A0055, 0x6A0055)
-  rightGrid.position.x = state.planeSize / 2 + 5
-  rightGrid.position.z = -state.planeSize / 2 + 20
-  scene.add(rightGrid)
+  const material = new THREE.MeshBasicMaterial({ map: texture, envMap: scene.background })
 
+  // material.envMaps = scene.background
+  const geometry = new THREE.PlaneGeometry(state.size, state.size)
 
-  const material = new THREE.LineBasicMaterial({ color: 0x0000ff })
-  const geometry = new THREE.Geometry()
+  const plane = new THREE.Mesh(geometry, material)
+  plane.rotation.x = -Math.PI / 2
 
-  for (let i = 0; i < state.points; i++) {
-    geometry.vertices.push(new THREE.Vector3(-16 + i, 1, 0))
-  }
+  // plane.envMaps(texture)
+  window.a = scene
 
-  const line = new THREE.Line(geometry, material)
-  scene.add(line)
-
-  return line
+  scene.add(plane)
 }

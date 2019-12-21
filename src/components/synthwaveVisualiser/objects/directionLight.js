@@ -1,12 +1,14 @@
 import * as THREE from 'three'
 
 export default (scene, camera) => {
-  let light = new THREE.DirectionalLight(0xffffff, 1.3)
-  let backLight = new THREE.DirectionalLight(0xffffff, 0.5)
   let state = {
-    position: { x: 50, y: 200, z: -200 },
-    size: 250
+    position: { x: 0, y: 50, z: 0 },
+    size: 300,
+    // color: 0xfa880f
+    color: 0xffffff
   }
+  let light = new THREE.DirectionalLight(state.color, 1.3)
+  let backLight = new THREE.DirectionalLight(state.color, 0.5)
 
   light.position.set(state.position.x, state.position.y, state.position.z)
   backLight.position.set(-state.position.x, state.position.y, -state.position.z)
@@ -23,10 +25,10 @@ export default (scene, camera) => {
   // }
 
   // if (config.helperLight) {
-  //   let helper = new THREE.CameraHelper(light.shadow.camera)
-  //
-  //   helper.name = 'directionLightHelper'
-  //   scene.add(helper)
+//     let helper = new THREE.CameraHelper(light.shadow.camera)
+// 
+//     helper.name = 'directionLightHelper'
+//     scene.add(helper)
   // }
   
   scene.add(light)

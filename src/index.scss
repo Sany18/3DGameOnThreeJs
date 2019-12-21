@@ -24,10 +24,49 @@ body {
 #root {
   width: 100%;
   height: 100%;
+
+  .content {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
 }
 
-.content {
-  width: 100%;
-  height: 100%;
-  border: none;
+#loader {
+  background-color: #fff;
+  position: absolute;
+  left: 50vw;
+  top: 50vh;
+  transform: translate(-50%, -50%);
+  width: 100vw;  
+  height: 100vh;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: black;
+
+  @keyframes disappear {
+    0% { opacity: 1; }
+    99% {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      top: 50vh;
+      left: 50vw;
+      transform: translate(-50%, -50%);
+    }
+    100% {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      left: 0;
+      top: 0;
+      transform: translate(0, 0);
+    }
+  }
+
+  &.loader-disable {
+    animation: disappear 3s ease-in-out forwards;
+  }
 }

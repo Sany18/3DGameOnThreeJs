@@ -1,5 +1,5 @@
-const config = require('../config.js')
 const root = __dirname
+const config = require('../config.js')
 const fs = require('fs')
 const chatWrite = fs.createWriteStream(config.chatDbURN, { flags: 'a' })
 const chatRead = fs.createReadStream(config.chatDbURN)
@@ -15,7 +15,12 @@ const WebSocketServer = require('ws').Server
 let userIdCounter = 0
 
 /* ----http | express---- */
-app.use(express.static(root))
+app.use(express.static(path.join(root + '/../build/')))
+
+app.get('/', (request, res) => {
+  // res.set('Content-Type', 'text/html')
+  res.sendFile(path.join(root + '/../build/index.html'))
+})
 
 const httpServer = config.https
   ? http.createServer(credentials, app)

@@ -1,26 +1,31 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
+import * as THREE from 'three'
 
 class ComponentName extends Component {
+  constructor() {
+    super()
+
+    this._content = React.createRef()
+  }
+
   componentDidMount() {
-    /* frame */
-    const iframe = document.createElement('iframe')
-    document.querySelector('#root').appendChild(iframe)
-
-    const iframeWindow = iframe.contentWindow
-    const iframeDocument = iframe.contentDocument
-
-    iframe.classList.add('content')
+    const iframeWindow = this._content.current.contentWindow
+    const iframeDocument = this._content.current.contentDocument
+    
     iframeDocument.body.setAttribute('style', 'margin: 0')
 
-    /* program */
-    /* ... */
+    iframeWindow.THREE = THREE
+
+    // let vanta = iframeDocument.createElement('script')
+    // vanta.setAttribute('src', '../lib/vanta.net.min.js')
+    // iframeDocument.head.appendChild(vanta)
+
+    vanta.addEventListener('load', () => {  })
   }
 
-  componentWillUnmount() {
-    document.querySelector('.content').remove()
-  }
-
-  render() { return null }
+  render() { return (
+    <iframe className='content' title='.' ref={this._content} />
+  )}
 }
 
 export default ComponentName

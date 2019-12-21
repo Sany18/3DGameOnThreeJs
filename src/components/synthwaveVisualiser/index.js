@@ -1,22 +1,23 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 import * as THREE from 'three'
-import { DirectionLight, Floor, FlyCameraControl, Skybox } from './objects/index.js'
+import { DirectionLight, Floor, FlyCameraControl, Skybox,
+         Equalizer } from './objects/index.js'
 import { EffectComposer, RenderPass } from 'postprocessing'
 // import Stats from '../libs/stats.js'
 
 class SynthvaveVisualiser extends Component {
+  constructor() {
+    super()
+
+    this._content = React.createRef()
+  }
+
   componentDidMount() {
-    /* frame */
-    const iframe = document.createElement('iframe')
-    document.querySelector('#root').appendChild(iframe)
+    const iframeWindow = this._content.current.contentWindow
+    const iframeDocument = this._content.current.contentDocument
 
-    const iframeWindow = iframe.contentWindow
-    const iframeDocument = iframe.contentDocument
-
-    iframe.classList.add('content')
     iframeDocument.body.setAttribute('style', 'margin: 0')
 
-    /* program */
     const scene = new THREE.Scene()
     const clock = new THREE.Clock()
     // let stats = new Stats()
@@ -63,7 +64,8 @@ class SynthvaveVisualiser extends Component {
     /* After initialize */
 
     /* objects */
-    let line = Floor(scene)
+    let line = Equalizer(scene)
+    Floor(scene)
     DirectionLight(scene)
     Skybox(scene)
     const flyCamera = FlyCameraControl(camera, iframeDocument)
@@ -111,11 +113,9 @@ class SynthvaveVisualiser extends Component {
     }; animate()
   }
 
-  componentWillUnmount() {
-    document.querySelector('.content').remove()
-  }
-
-  render() { return null }
+  render() { return (
+    <iframe className='content' title='.' ref={this._content} />
+  )}
 }
 
 export default SynthvaveVisualiser

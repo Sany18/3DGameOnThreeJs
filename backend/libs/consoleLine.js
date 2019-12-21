@@ -1,7 +1,7 @@
 // { http: int, ws: int }
 module.exports = drawLine = args => {
   const s = ['┌', '┬', '┐', '└', '┴', '┘', '─', '│', '░']
-  const width = process.stdout.columns || 80
+  const width = (process.stdout.columns || 80) - 4
   const w = (width - (Object.values(args).reduce((a, i) => a + (i + '').length, 0) +
             Object.keys(args).reduce((a, i) => a + (i + '').length, 0) + 6)) / 2
 

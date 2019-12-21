@@ -6,6 +6,18 @@
   top: 0;
   left: 0;
   border-radius: 50%;
+  z-index: -1;
+
+  &-main {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: -11px 0 0 -11px;
+    width: 26px;
+    height: 26px;
+    border: 1px solid #fff2;
+    z-index: -1;
+  }
 }
 
 .main-navigation {
