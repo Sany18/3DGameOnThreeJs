@@ -6,7 +6,7 @@
   "license": "ISC",
   "author": "Hoxz",
   "scripts": {
-    "start": "concurrently \"react-scripts start\" \"node ./backend/index\"",
+    "start": "concurrently \"PORT=8081 react-scripts start\" \"node ./backend/index\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

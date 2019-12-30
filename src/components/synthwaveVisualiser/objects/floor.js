@@ -3,8 +3,8 @@ import FloorMesh from '../assets/textures/floor-mesh.png'
 
 export default scene => {
   const state = {
-    repeatTexture: 100,
-    size: 100
+    repeatTexture: 1000,
+    size: 1000
   }
 
   const texture = new THREE.TextureLoader().load(FloorMesh)
@@ -12,16 +12,13 @@ export default scene => {
   texture.wrapT = THREE.RepeatWrapping
   texture.repeat.set(state.repeatTexture, state.repeatTexture)
 
-  const material = new THREE.MeshBasicMaterial({ map: texture, envMap: scene.background })
-
-  // material.envMaps = scene.background
+  const material = new THREE.MeshLambertMaterial({ map: texture, envMap: scene.background, combine: THREE.MixOperation, reflectivity: .5 })
   const geometry = new THREE.PlaneGeometry(state.size, state.size)
 
   const plane = new THREE.Mesh(geometry, material)
   plane.rotation.x = -Math.PI / 2
-
-  // plane.envMaps(texture)
-  window.a = scene
+  plane.position.set(.5, 0, 20.5)
 
   scene.add(plane)
+  return texture
 }

@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { DirectionLight, Floor, FlyCameraControl, Skybox,
          Equalizer } from './objects/index.js'
 import { EffectComposer, RenderPass } from 'postprocessing'
-// import Stats from '../libs/stats.js'
+import Stats from '../../lib/stats.js'
 
 class SynthvaveVisualiser extends Component {
   constructor() {
@@ -20,16 +20,16 @@ class SynthvaveVisualiser extends Component {
 
     const scene = new THREE.Scene()
     const clock = new THREE.Clock()
-    // let stats = new Stats()
+    const stats = new Stats()
     const state = {
-      camera: { angle: 75, far: 1000, near: .1 }
+      camera: { angle: 75, far: 5000, near: .1 }
     }
 
     /* camera */
     let camera = new THREE.PerspectiveCamera(
       state.camera.angle, iframeWindow.innerWidth / iframeWindow.innerHeight,
       state.camera.near, state.camera.far)
-    camera.position.y = 5
+    camera.position.y = 1
     camera.position.z = 20
 
     /* renderer */
@@ -65,11 +65,12 @@ class SynthvaveVisualiser extends Component {
 
     /* objects */
     let line = Equalizer(scene)
-    Floor(scene)
-    DirectionLight(scene)
     Skybox(scene)
+    const floorTexture = Floor(scene)
+    DirectionLight(scene)
     const flyCamera = FlyCameraControl(camera, iframeDocument)
-    scene.fog = new THREE.Fog(0xc20000)
+    scene.fog = new THREE.Fog(0xc20000, .1, 100)
+
 
     /* analyser */
     let analyser, dataArray = false
@@ -101,8 +102,9 @@ class SynthvaveVisualiser extends Component {
 
     /* action */
     const action = (time, delta) => {
-      // if (config.showFps) stats.showFps().showMemory()
+      stats.showFps()
       flyCamera(delta)
+      if (floorTexture.image) floorTexture.offset.y += .02
       updateVisualiser()
     }
 

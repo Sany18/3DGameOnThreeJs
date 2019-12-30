@@ -3,7 +3,7 @@ import * as THREE from 'three'
 export default scene => {
   const state = { points: 32 }
 
-  const material = new THREE.LineBasicMaterial({ color: 0x0000ff })
+  const material = new THREE.LineBasicMaterial({ color: 'pink' })
   const geometry = new THREE.Geometry()
 
   for (let i = 0; i < state.points; i++) {

@@ -1,7 +1,7 @@
 let config = {
   debug: true,
 
-  serverPort: 8081,
+  serverPort: 8082,
   https: false,
 
   shadowResolution: 2048,
