@@ -17,7 +17,7 @@ export default scene => {
 
   const plane = new THREE.Mesh(geometry, material)
   plane.rotation.x = -Math.PI / 2
-  plane.position.set(.5, 0, 20.5)
+  plane.position.set(0, 0, 20)
 
   scene.add(plane)
   return texture

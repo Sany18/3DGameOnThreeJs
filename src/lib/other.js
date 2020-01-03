@@ -1,5 +1,10 @@
 // document.body.contentEditable=true
 
+window.randInt = (from, to) => Math.round(to
+  ? from + Math.random() * (to - from)
+  : Math.random() * from
+)
+
 const greeting = () => {
   let terminalWidth = 250
   let terminalWidthDefault = terminalWidth || 250

@@ -17,7 +17,7 @@ let userIdCounter = 0
 /* ----http | express---- */
 app.use(express.static(path.join(root + '/../build/')))
 
-app.get('/', (request, res) => {
+app.get('*', (request, res) => {
   // res.set('Content-Type', 'text/html')
   res.sendFile(path.join(root + '/../build/index.html'))
 })

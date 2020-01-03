@@ -11,6 +11,7 @@ export default scene => {
   }
 
   const line = new THREE.Line(geometry, material)
+  line.position.set(-50, 0, -20)
   scene.add(line)
 
   return line

@@ -1,23 +1,36 @@
 import React, { Component } from 'react'
 import * as THREE from 'three'
 import { DirectionLight, Floor, FlyCameraControl, Skybox,
-         Equalizer } from './objects/index.js'
+         Mountain } from './objects/index.js'
 import { EffectComposer, RenderPass } from 'postprocessing'
 import Stats from '../../lib/stats.js'
+import './styles.scss'
 
 class SynthvaveVisualiser extends Component {
   constructor() {
     super()
 
+    this.state = {
+      allDevices: [],
+      currentDevice: 'default'
+    }
+
     this._content = React.createRef()
   }
 
   componentDidMount() {
+    this.runIframe()
+  }
+
+  runIframe = () => {
+    navigator.mediaDevices.enumerateDevices().then(allDevices => this.setState({ allDevices }))
+
     const iframeWindow = this._content.current.contentWindow
     const iframeDocument = this._content.current.contentDocument
 
     iframeDocument.body.setAttribute('style', 'margin: 0')
 
+    const randInt = window.randInt
     const scene = new THREE.Scene()
     const clock = new THREE.Clock()
     const stats = new Stats()
@@ -58,19 +71,20 @@ class SynthvaveVisualiser extends Component {
       camera.aspect = iframeWindow.innerWidth / iframeWindow.innerHeight
       camera.updateProjectionMatrix()
       renderer.setSize(iframeWindow.innerWidth, iframeWindow.innerHeight)
-      // composer.setSize(iframeWindow.innerWidth, iframeWindow.innerHeight)
+      composer.setSize(iframeWindow.innerWidth, iframeWindow.innerHeight)
     }, false)
 
     /* After initialize */
-
     /* objects */
-    let line = Equalizer(scene)
     Skybox(scene)
-    const floorTexture = Floor(scene)
     DirectionLight(scene)
-    const flyCamera = FlyCameraControl(camera, iframeDocument)
-    scene.fog = new THREE.Fog(0xc20000, .1, 100)
 
+    const floorTexture = Floor(scene)
+    // const line = Equalizer(scene)
+    const mountains = []
+    const flyCamera = FlyCameraControl(camera, iframeDocument)
+
+    scene.fog = new THREE.Fog(0xc20000, .1, 100)
 
     /* analyser */
     let analyser, dataArray = false
@@ -90,15 +104,29 @@ class SynthvaveVisualiser extends Component {
 
       analyser.getByteFrequencyData(dataArray)
 
-      for (let i = 0; i < dataArray.length; i++) {
-        line.geometry.vertices[i].y = dataArray[i] / 20
+      while (mountains.length < 15) {
+        mountains.push(Mountain(scene, randInt(-15, 15), randInt(0, -20)))
       }
 
-      line.geometry.verticesNeedUpdate = true
+      for (let i = 0; i < mountains.length; i++) {
+        mountains[i].updateMountainHeight(dataArray[i * 2] / 35)
+        mountains[i].position.z += .02
+
+        if (mountains[i].position.z > 20) {
+          scene.remove(mountains[i])
+          mountains.splice(i, 1)
+        }
+      }
+
+      // for (let i = 0; i < dataArray.length; i++) {
+        // line.geometry.vertices[i].y = dataArray[i] / 20
+      // }
+
+      // line.geometry.verticesNeedUpdate = true
     }
 
-    navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-    .then(handleSuccess)
+    navigator.mediaDevices.getUserMedia({ audio: { deviceId: this.state.currentDevice }, video: false })
+      .then(handleSuccess)
 
     /* action */
     const action = (time, delta) => {
@@ -115,9 +143,35 @@ class SynthvaveVisualiser extends Component {
     }; animate()
   }
 
-  render() { return (
-    <iframe className='content' title='.' ref={this._content} />
-  )}
+  getDevice = elem => {
+    this.setState({ currentDevice: elem.target.dataset.deviceid })
+  }
+
+  renderDeviceButtons = () => (
+    this.state.allDevices.map((device, ind) => (
+      device.kind == 'audioinput'
+        ? <div className='iframe_html__device'
+              data-deviceid={device.deviceId}
+              key={'device' + ind}
+              onClick={this.getDevice}>
+            {device.label}
+          </div>
+        : null
+    ))
+  )
+
+  render() {
+    console.log('devideId:', this.state.currentDevice)
+
+    return (
+      <>
+        <iframe className='content' title='.' ref={this._content} />
+        <div className='iframe_html'>
+          {this.renderDeviceButtons()}
+        </div>
+      </>
+    )
+  }
 }
 
 export default SynthvaveVisualiser

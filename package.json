@@ -6,7 +6,7 @@
   "license": "ISC",
   "author": "Hoxz",
   "scripts": {
-    "start": "concurrently \"PORT=8081 react-scripts start\" \"node ./backend/index\"",
+    "start": "concurrently \"react-scripts start\" \"node ./backend/index\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -32,8 +32,12 @@
     "three": "^0.111.0"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "rules": {
+      "eqeqeq": "off"
+    }
   },
+  "eslintIgnore": ["*"],
   "browserslist": {
     "production": [
       ">0.2%",
