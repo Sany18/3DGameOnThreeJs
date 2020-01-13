@@ -12,7 +12,7 @@ export default (camera, iframeDocument)  => {
   let euler = new THREE.Euler(0, 0, 0, 'YXZ')
   let direction = new THREE.Vector3(0, 0, 0)
   let config = {
-    moveSpeed: 100
+    moveSpeed: 10
   }
 
   iframeDocument.addEventListener('click', () => iframeDocument.body.requestPointerLock())

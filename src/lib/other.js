@@ -5,6 +5,12 @@ window.randInt = (from, to) => Math.round(to
   : Math.random() * from
 )
 
+window.randIntBetweenRanges = (...ranges) => {
+  const range = ranges[window.randInt(ranges.length - 1)]
+
+  return window.randInt(range[0], range[1])
+}
+
 const greeting = () => {
   let terminalWidth = 250
   let terminalWidthDefault = terminalWidth || 250

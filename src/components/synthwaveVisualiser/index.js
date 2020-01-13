@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import * as THREE from 'three'
 import { DirectionLight, Floor, FlyCameraControl, Skybox,
-         Mountain } from './objects/index.js'
+         Mountain, Road, StreetLight } from './objects/index.js'
 import { EffectComposer, RenderPass } from 'postprocessing'
 import Stats from '../../lib/stats.js'
 import './styles.scss'
@@ -31,6 +31,8 @@ class SynthvaveVisualiser extends Component {
     iframeDocument.body.setAttribute('style', 'margin: 0')
 
     const randInt = window.randInt
+    const randIntBetweenRanges = window.randIntBetweenRanges
+
     const scene = new THREE.Scene()
     const clock = new THREE.Clock()
     const stats = new Stats()
@@ -42,7 +44,7 @@ class SynthvaveVisualiser extends Component {
     let camera = new THREE.PerspectiveCamera(
       state.camera.angle, iframeWindow.innerWidth / iframeWindow.innerHeight,
       state.camera.near, state.camera.far)
-    camera.position.y = 1
+    camera.position.y = .5
     camera.position.z = 20
 
     /* renderer */
@@ -77,14 +79,20 @@ class SynthvaveVisualiser extends Component {
     /* After initialize */
     /* objects */
     Skybox(scene)
-    DirectionLight(scene)
+    // DirectionLight(scene)
 
+    const road = Road(scene)
     const floorTexture = Floor(scene)
-    // const line = Equalizer(scene)
-    const mountains = []
     const flyCamera = FlyCameraControl(camera, iframeDocument)
+    const mountains = []
+    const streetLights = []
 
-    scene.fog = new THREE.Fog(0xc20000, .1, 100)
+    scene.fog = new THREE.Fog(0x000000, .1, 100)
+
+    for(let i = 0; i < 5; i++) {
+      streetLights.push(StreetLight(scene, (i * -10) + 15))
+      mountains.push(Mountain(scene, randIntBetweenRanges([-20, -3], [3, 20]), randInt(0, 20)))
+    }
 
     /* analyser */
     let analyser, dataArray = false
@@ -105,7 +113,18 @@ class SynthvaveVisualiser extends Component {
       analyser.getByteFrequencyData(dataArray)
 
       while (mountains.length < 15) {
-        mountains.push(Mountain(scene, randInt(-15, 15), randInt(0, -20)))
+        mountains.push(Mountain(scene, randIntBetweenRanges([-20, -3], [3, 20]), randInt(0, -20)))
+      }
+
+      for (let i = 0; i < streetLights.length; i++) {
+        streetLights[i].position.z += .02
+        streetLights[i].children[3].intensity = (dataArray[12] / 255 * 1.5) + .5
+
+        if (streetLights[i].position.z > 40) {
+          scene.remove(streetLights[i])
+          streetLights.splice(i, 1)
+          streetLights.push(StreetLight(scene, -10))
+        }
       }
 
       for (let i = 0; i < mountains.length; i++) {
@@ -117,13 +136,9 @@ class SynthvaveVisualiser extends Component {
           mountains.splice(i, 1)
         }
       }
-
-      // for (let i = 0; i < dataArray.length; i++) {
-        // line.geometry.vertices[i].y = dataArray[i] / 20
-      // }
-
-      // line.geometry.verticesNeedUpdate = true
     }
+
+    window.a = streetLights
 
     navigator.mediaDevices.getUserMedia({ audio: { deviceId: this.state.currentDevice }, video: false })
       .then(handleSuccess)
@@ -132,7 +147,11 @@ class SynthvaveVisualiser extends Component {
     const action = (time, delta) => {
       stats.showFps()
       flyCamera(delta)
-      if (floorTexture.image) floorTexture.offset.y += .02
+
+
+      floorTexture.offset.y += .02
+      road.offset.y += .02
+
       updateVisualiser()
     }
 

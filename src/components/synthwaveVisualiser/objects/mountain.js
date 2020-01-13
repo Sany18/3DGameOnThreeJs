@@ -11,7 +11,7 @@ export default (scene, offsetX = 0, offsetZ = 0) => {
   texture.repeat.set(width, height)
 
   const geometry = new THREE.PlaneGeometry(width, height, width, height)
-  const material = new THREE.MeshLambertMaterial({ map: texture, envMap: scene.background, combine: THREE.MixOperation, reflectivity: .5 })
+  const material = new THREE.MeshBasicMaterial({ map: texture })
   const plane = new THREE.Mesh(geometry, material)
   const centralVertex = Math.round(((width+1) * (height+1)) / 2) - 1
 
