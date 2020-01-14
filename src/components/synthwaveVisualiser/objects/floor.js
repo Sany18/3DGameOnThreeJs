@@ -12,7 +12,7 @@ export default scene => {
   texture.wrapT = THREE.RepeatWrapping
   texture.repeat.set(state.repeatTexture, state.repeatTexture)
 
-  const material = new THREE.MeshBasicMaterial({ map: texture })
+  const material = new THREE.MeshPhongMaterial({ map: texture })
   const geometry = new THREE.PlaneGeometry(state.size, state.size)
 
   const plane = new THREE.Mesh(geometry, material)
