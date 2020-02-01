@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import * as THREE from 'three'
 import { DirectionLight, Floor, FlyCameraControl, Skybox,
-         Mountain, Road, StreetLight, Billboard } from './objects/index.js'
+         Mountain, Road, StreetLight, Billboard, Grid } from './objects/index.js'
 import { EffectComposer, RenderPass } from 'postprocessing'
 import Stats from '../../lib/stats.js'
 import './styles.scss'
 
 class SynthvaveVisualiser extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
 
     this.state = {
       allDevices: [],
@@ -18,9 +18,7 @@ class SynthvaveVisualiser extends Component {
     this._content = React.createRef()
   }
 
-  componentDidMount() {
-    this.runIframe()
-  }
+  componentDidMount() {this.runIframe()}
 
   runIframe = () => {
     navigator.mediaDevices.enumerateDevices().then(allDevices => this.setState({ allDevices }))
@@ -38,7 +36,9 @@ class SynthvaveVisualiser extends Component {
     const stats = new Stats()
     const state = {
       camera: { angle: 75, far: 5000, near: .1 },
-      rideSpeed: .02
+      rideSpeed: .02,
+      renderer: { antialias: false },
+      pixelRatio: 1
     }
 
     /* camera */
@@ -49,8 +49,8 @@ class SynthvaveVisualiser extends Component {
     camera.position.z = 20
 
     /* renderer */
-    let renderer = new THREE.WebGLRenderer({ antialias: true })
-    renderer.setPixelRatio(devicePixelRatio * 1)
+    let renderer = new THREE.WebGLRenderer(state.renderer)
+    renderer.setPixelRatio(devicePixelRatio * state.pixelRatio)
     renderer.setSize(iframeWindow.innerWidth, iframeWindow.innerHeight)
     renderer.shadowMap.enabled = true
     renderer.shadowMapSoft = true
@@ -80,11 +80,12 @@ class SynthvaveVisualiser extends Component {
     /* After initialize */
     /* objects */
     Skybox(scene)
-    // DirectionLight(scene)
+    DirectionLight(scene)
+    Grid(scene)
 
     let billboard = Billboard(scene, -10)
     const road = Road(scene)
-    const floorTexture = Floor(scene)
+    // const floorTexture = Floor(scene)
     const flyCamera = FlyCameraControl(camera, iframeDocument)
     const mountains = []
     const streetLights = []
@@ -152,7 +153,7 @@ class SynthvaveVisualiser extends Component {
       if (!billboard) billboard = Billboard(scene, -30)
       billboard.position.z += state.rideSpeed
 
-      floorTexture.offset.y += state.rideSpeed
+      // floorTexture.offset.y += state.rideSpeed
       road.offset.y += state.rideSpeed
 
       updateVisualiser()
@@ -165,9 +166,7 @@ class SynthvaveVisualiser extends Component {
     }; animate()
   }
 
-  getDevice = elem => {
-    this.setState({ currentDevice: elem.target.dataset.deviceid })
-  }
+  getDevice = elem => this.setState({ currentDevice: elem.target.dataset.deviceid })
 
   renderDeviceButtons = () => (
     this.state.allDevices.map((device, ind) => (
@@ -183,13 +182,11 @@ class SynthvaveVisualiser extends Component {
   )
 
   render() {
-    console.log('devideId:', this.state.currentDevice)
-
     return (
       <>
         <iframe className='content' title='.' ref={this._content} />
         <div className='iframe_html'>
-          {this.renderDeviceButtons()}
+          {/* {this.renderDeviceButtons()} */}
         </div>
       </>
     )
