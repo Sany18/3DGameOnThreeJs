@@ -81,11 +81,10 @@ class SynthvaveVisualiser extends Component {
     /* objects */
     Skybox(scene)
     DirectionLight(scene)
-    Grid(scene)
 
     let billboard = Billboard(scene, -10)
     const road = Road(scene)
-    // const floorTexture = Floor(scene)
+    const floorTexture = Floor(scene)
     const flyCamera = FlyCameraControl(camera, iframeDocument)
     const mountains = []
     const streetLights = []
@@ -153,7 +152,7 @@ class SynthvaveVisualiser extends Component {
       if (!billboard) billboard = Billboard(scene, -30)
       billboard.position.z += state.rideSpeed
 
-      // floorTexture.offset.y += state.rideSpeed
+      floorTexture.offset.y += state.rideSpeed
       road.offset.y += state.rideSpeed
 
       updateVisualiser()
