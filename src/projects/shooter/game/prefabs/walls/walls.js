@@ -1,4 +1,6 @@
-export default scene => {
+import * as THREE from 'three'
+
+export default (scene, Physijs) => {
   const positions = [
     { x: 0, y: 10, z: 0, r: { x: 0, y: 0, z: 0 } },
     { x: 20, y: 10, z: 0, r: { x: 0, y: 0, z: 0 } },
@@ -10,7 +12,7 @@ export default scene => {
   ]
 
   let boxGeometry = new THREE.BoxBufferGeometry(20, 20, 4)
-  let boxTexture = THREE.loadBasicTexture('skybox/4.png')
+  let boxTexture = new THREE.TextureLoader().load(require('../../../assets/textures/skybox/4.png'))
   let boxMaterial = new THREE.MeshPhongMaterial({ map: boxTexture })
   // let boxMaterial = new THREE.MeshBasicMaterial({ color: 0x123123, wireframe: false, opacity: 1 })
 

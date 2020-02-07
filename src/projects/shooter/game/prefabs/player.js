@@ -1,14 +1,14 @@
 import * as THREE from 'three'
-import Physijs from 'physijs-webpack'
 
 const config = {
   jumpHeight: 180,
   moveSpeed: 100,
-  yourMass: 1,
+  yourMass: 1
 }
 
 export default class Player {
-  constructor(camera, scene) {
+  constructor(camera, scene, Physijs) {
+    this.Physijs = Physijs
     this.camera = camera
     this.scene = scene
     this.body = this.createPlayerModel()
@@ -93,7 +93,7 @@ export default class Player {
   createPlayerModel = () => {
     let boxGeometry = new THREE.BoxBufferGeometry(5, 10, 2.5)
     let boxMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, opacity: 1 })
-    let body = new Physijs.BoxMesh(boxGeometry, boxMaterial, config.yourMass)
+    let body = new this.Physijs.BoxMesh(boxGeometry, boxMaterial, config.yourMass)
 
     body.castShadow = true
     body.receiveShadow = true

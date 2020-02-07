@@ -21,13 +21,8 @@ class SynthvaveVisualiser extends Component {
   componentDidMount() {this.runIframe()}
 
   runIframe = () => {
-    navigator.mediaDevices.enumerateDevices().then(allDevices => this.setState({ allDevices }))
-
     const iframeWindow = this._content.current.contentWindow
     const iframeDocument = this._content.current.contentDocument
-
-    iframeDocument.body.setAttribute('style', 'margin: 0')
-
     const randInt = window.randInt
     const randIntBetweenRanges = window.randIntBetweenRanges
 
@@ -40,6 +35,8 @@ class SynthvaveVisualiser extends Component {
       renderer: { antialias: false },
       pixelRatio: 1
     }
+
+    iframeDocument.body.setAttribute('style', 'margin: 0')
 
     /* camera */
     let camera = new THREE.PerspectiveCamera(
@@ -98,9 +95,11 @@ class SynthvaveVisualiser extends Component {
 
     /* analyser */
     let analyser, dataArray = false
-    const handleSuccess = stream => {
+    const getAudioCtx = (stream, type = 'stream') => {
       const audioCtx = new AudioContext()
-      const source = audioCtx.createMediaStreamSource(stream)
+      const source = type == 'stream'
+        ? audioCtx.createMediaStreamSource(stream)
+        : audioCtx.createMediaElementSource(stream)
 
       analyser = audioCtx.createAnalyser()
       source.connect(analyser)
@@ -140,8 +139,12 @@ class SynthvaveVisualiser extends Component {
       }
     }
 
+    navigator.mediaDevices.enumerateDevices().then(allDevices => this.setState({ allDevices }))
     navigator.mediaDevices.getUserMedia({ audio: { deviceId: this.state.currentDevice }, video: false })
-      .then(handleSuccess)
+      .then(getAudioCtx)
+    // document.querySelector('.audio').addEventListener('play', e => {
+    //   getAudioCtx(e.target, 'file')
+    // })
 
     /* action */
     const action = (time, delta) => {
@@ -180,13 +183,19 @@ class SynthvaveVisualiser extends Component {
     ))
   )
 
+  importer = () => {
+    const importAll = folder => folder.keys().map(folder)
+    return importAll(require.context('./assets/music/', false, /\.(mp3|wma)$/))
+  }
+
   render() {
     return (
       <>
         <iframe className='content' title='.' ref={this._content} />
-        <div className='iframe_html'>
-          {/* {this.renderDeviceButtons()} */}
-        </div>
+        {/* <audio className='audio' controls src={this.importer()[1]} /> */}
+        {/* <div className='iframe_html'> */}
+        {/*   {this.renderDeviceButtons()} */}
+        {/* </div> */}
       </>
     )
   }

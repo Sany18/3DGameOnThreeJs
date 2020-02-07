@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-export default (scene, camera) => {
+export default (scene, Physijs) => {
   const state = {
     planeSize: 100,
     scale: 20,

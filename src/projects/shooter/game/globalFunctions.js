@@ -19,7 +19,7 @@ THREE.loadBasicTexture = address => {
 function getFileSize(url) {
   fetch(url).then(r => {
     ++sizeCounter
-    totalSize += +r.headers.get("Content-Length")
+    totalSize += +r.headers.get('Content-Length')
     if (sizeCounter >= config.textures) console.log('Textures size: ' + totalSize.fileSize(1))
   })
 }

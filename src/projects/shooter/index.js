@@ -1,21 +1,20 @@
 import React, { Component } from 'react'
 import * as THREE from 'three'
-import Physijs from 'physijs-webpack'
 import { EffectComposer, RenderPass } from 'postprocessing'
-
-// import { Player, DirectionLight, Floor, Skybox,
-//          Weapon, Boxes, RightHand, AnotherPlayer,
-//          Walls } from './game/prefabs/index.js'
-import { Player } from './game/prefabs/index.js'
+import { Player, DirectionLight, Floor, Skybox,
+         Weapon, Boxes, RightHand, AnotherPlayer,
+         Walls } from './game/prefabs/index.js'
 import './game/index.js'
+import './assets/styles.css'
 
 class Shooter extends Component {
   componentDidMount() {
     /* frame */
+    const Physijs = require('physijs-browserify')(THREE)
     const iframe = document.createElement('iframe')
     document.querySelector('#root').appendChild(iframe)
 
-    const window = iframe.contentWindow
+    const iframeWindow = iframe.contentWindow
     const iframeDocument = iframe.contentDocument
 
     iframe.classList.add('content')
@@ -39,14 +38,15 @@ class Shooter extends Component {
     }
 
     /* physis */
-    Physijs.scripts.worker = '/libs/physis/physijs_worker.js'
-    Physijs.scripts.ammo = '/libs/physis/ammo.js'
+    Physijs.scripts.worker = window.location.origin + '/lib/physijs_worker.js'
+    Physijs.scripts.ammo = window.location.origin + '/lib/ammo.js'
+
     scene = new Physijs.Scene({ reportsize: 60, fixedTimeStep: 1 / 60 })
     scene.setGravity(new THREE.Vector3(0, -config.gravity, 0))
 
     /* camera */
     let camera = new THREE.PerspectiveCamera(
-      state.camera.angle, window.innerWidth / window.innerHeight,
+      state.camera.angle, iframeWindow.innerWidth / iframeWindow.innerHeight,
       state.camera.near, state.camera.far)
 
     let listener = new THREE.AudioListener()
@@ -56,7 +56,7 @@ class Shooter extends Component {
     /* renderer */
     let renderer = new THREE.WebGLRenderer({ antialias: config.antialias })
     renderer.setPixelRatio(devicePixelRatio * config.resolutionMultiplier)
-    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setSize(iframeWindow.innerWidth, iframeWindow.innerHeight)
     renderer.shadowMap.enabled = true
     renderer.shadowMapSoft = true
     renderer.shadowCameraNear = 3
@@ -75,11 +75,11 @@ class Shooter extends Component {
     pass.renderToScreen = true
 
     /* global listeners */
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight
+    iframeWindow.addEventListener('resize', () => {
+      camera.aspect = iframeWindow.innerWidth / iframeWindow.innerHeight
       camera.updateProjectionMatrix()
-      renderer.setSize(window.innerWidth, window.innerHeight)
-      composer.setSize(window.innerWidth, window.innerHeight)
+      renderer.setSize(iframeWindow.innerWidth, iframeWindow.innerHeight)
+      composer.setSize(iframeWindow.innerWidth, iframeWindow.innerHeight)
     }, false)
 
     // let isMusicEnable = false
@@ -115,20 +115,20 @@ class Shooter extends Component {
     // })
 
     /* objects */
-    // Skybox(scene)
-    // Floor(scene)
-    // Boxes(scene, 1)
-    // DirectionLight(scene)
-    // Walls(scene)
+    Skybox(scene)
+    Floor(scene, Physijs)
+    Boxes(scene, 1, Physijs)
+    DirectionLight(scene)
+    Walls(scene, Physijs)
     // let weapon = Weapon(camera, listener)
 
     scene.fog = new THREE.Fog(0xc20000)
 
-    window.player = new Player(camera, scene)
+    iframeWindow.player = new Player(camera, scene, Physijs)
     // let testPlayer = new AnotherPlayer(scene, '[test player]')
 
     let raycaster = new THREE.Raycaster()
-    window.addEventListener('click', () => {
+    iframeWindow.addEventListener('click', () => {
       let position = camera.getWorldPosition(new THREE.Vector3())
       let direction = camera.getWorldDirection(new THREE.Vector3())
 
@@ -143,24 +143,24 @@ class Shooter extends Component {
         if (i.object.name == 'box') console.log('hit box')
         if (i.object.name == 'wall') console.log('hit wall')
         if (i.object.name == 'realPlayer') {
-          window.send('i heat ' + i.object.networkId)
+          iframeWindow.send('i heat ' + i.object.networkId)
         }
       })
     })
 
     /* network */
-    window.pause = false
-    window.networkPlayers = {}
-    window.definedNetworkPlayers = {}
-    window.myId = 0
+    iframeWindow.pause = false
+    iframeWindow.networkPlayers = {}
+    iframeWindow.definedNetworkPlayers = {}
+    iframeWindow.myId = 0
 
     function updateNetworkPlayers() {
-      for (let key in window.networkPlayers) {
-        if (window.networkPlayers[key].__pos__ != window.myId) {
+      for (let key in iframeWindow.networkPlayers) {
+        if (iframeWindow.networkPlayers[key].__pos__ != iframeWindow.myId) {
           setNetworkPlayerPosition(
             key,
-            window.networkPlayers[key].position,
-            window.networkPlayers[key].quaternion
+            iframeWindow.networkPlayers[key].position,
+            iframeWindow.networkPlayers[key].quaternion
           )
         }
       }
@@ -170,37 +170,37 @@ class Shooter extends Component {
     }
 
     function setNetworkPlayerPosition(__id__, pos, qua) {
-      if (window.definedNetworkPlayers[__id__]) {
-        window.definedNetworkPlayers[__id__].position.set(pos.x, pos.y, pos.z)
-        window.definedNetworkPlayers[__id__].quaternion.set(qua._x, qua._y, qua._z, qua._w)
+      if (iframeWindow.definedNetworkPlayers[__id__]) {
+        iframeWindow.definedNetworkPlayers[__id__].position.set(pos.x, pos.y, pos.z)
+        iframeWindow.definedNetworkPlayers[__id__].quaternion.set(qua._x, qua._y, qua._z, qua._w)
       } else {
-        // window.definedNetworkPlayers[__id__] = new AnotherPlayer(scene, __id__)
+        // iframeWindow.definedNetworkPlayers[__id__] = new AnotherPlayer(scene, __id__)
       }
     }
 
-    function sendOwnCoordinates() {
-      if (!window.send.isOpen || !window.myId) { return }
+//     function sendOwnCoordinates() {
+//       if (!iframeWindow.send.isOpen || !iframeWindow.myId) { return }
+//
+//       iframeWindow.send(JSON.stringify({
+//         __pos__: iframeWindow.myId,
+//         position: iframeWindow.player.body.position,
+//         quaternion: iframeWindow.player.body.quaternion
+//       }))
+//     }
 
-      window.send(JSON.stringify({
-        __pos__: window.myId,
-        position: window.player.body.position,
-        quaternion: window.player.body.quaternion
-      }))
-    }
-
-    window.addEventListener('unload', () => {
-      window.send(JSON.stringify({ __destroy__: window.myId }))
-      window.send('bye ' + window.myId)
+    iframeWindow.addEventListener('unload', () => {
+      iframeWindow.send(JSON.stringify({ __destroy__: iframeWindow.myId }))
+      iframeWindow.send('bye ' + iframeWindow.myId)
     })
 
     /* action */
     const action = (time, delta) => {
-      sendOwnCoordinates()
+      // sendOwnCoordinates()
       updateNetworkPlayers()
 
       // testPlayer.rotation.y += .02
 
-      window.player.control()
+      iframeWindow.player.control()
     }
 
     const animate = (time, delta = clock.getDelta()) => {
@@ -228,8 +228,8 @@ class Shooter extends Component {
       </div>
 
       <form id='chat'>
-        <div class='chat-messages-field'></div>
-        <input class='chat-input' type='text' />
+        <div className='chat-messages-field'></div>
+        <input className='chat-input' type='text' />
       </form>
     </>
   )}
