@@ -1,5 +1,9 @@
 import * as THREE from 'three'
 
+const state = {
+  showNamesOverPlayer: true
+}
+
 export default class {
   constructor(scene, id, name) {
     function makeLabelCanvas(width = 256, height = 64) {
@@ -38,7 +42,7 @@ export default class {
     const labelMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true })
     const label = new THREE.Sprite(labelMaterial)
 
-    if (config.showNamesOverPlayer) somePlayer.add(label)
+    if (state.showNamesOverPlayer) somePlayer.add(label)
     label.position.y = somePlayer.position.y + 5
 
     label.scale.x = canvas.width * labelBaseScale

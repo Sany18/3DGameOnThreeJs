@@ -31,10 +31,13 @@ class Shooter extends Component {
         near: .1
       }
     }
+
     let config = {
       resolutionMultiplier: 1,
       antialias: false,
-      gravity: 980
+      gravity: 980,
+      music: 15,
+      isMusicEnable: false
     }
 
     /* physis */
@@ -82,11 +85,10 @@ class Shooter extends Component {
       composer.setSize(iframeWindow.innerWidth, iframeWindow.innerHeight)
     }, false)
 
-    // let isMusicEnable = false
     // iframeDocument.querySelector('.music').addEventListener('click', () => {
-    //   isMusicEnable = !isMusicEnable
-    //
-    //   if (isMusicEnable) {
+    //   config.isMusicEnable = !config.isMusicEnable
+    
+    //   if (config.isMusicEnable) {
     //     iframeDocument.querySelector('.music').innerHTML = 'Music on'
     //     music.setVolume(config.music / 100)
     //   } else {
@@ -98,7 +100,7 @@ class Shooter extends Component {
     // let isSoundsEnable = false
     // iframeDocument.querySelector('.sounds').addEventListener('click', () => {
     //   isSoundsEnable = !isSoundsEnable
-    //
+    
     //   isSoundsEnable
     //    ? iframeDocument.querySelector('.sounds').innerHTML = 'Sounds on'
     //    : iframeDocument.querySelector('.sounds').innerHTML = 'Sounds off'
@@ -106,13 +108,13 @@ class Shooter extends Component {
 
 
     /* music */
-    // let musicLoader = new THREE.AudioLoader()
-    // musicLoader.load(assets("music/Tommy - Flyin'.mp3"), buffer => {
-    //   music.setBuffer(buffer)
-    //   music.setLoop(true)
-    //   music.setVolume(0)
-    //   music.play()
-    // })
+    let musicLoader = new THREE.AudioLoader()
+    musicLoader.load(require("./assets/music/Tommy - Flyin'.mp3"), buffer => {
+      music.setBuffer(buffer)
+      music.setLoop(true)
+      music.setVolume(0.15)
+      music.play()
+    })
 
     /* objects */
     Skybox(scene)
@@ -120,22 +122,22 @@ class Shooter extends Component {
     Boxes(scene, 1, Physijs)
     DirectionLight(scene)
     Walls(scene, Physijs)
-    // let weapon = Weapon(camera, listener)
+    let weapon = Weapon(camera, listener)
 
     scene.fog = new THREE.Fog(0xc20000)
 
-    iframeWindow.player = new Player(camera, scene, Physijs)
-    // let testPlayer = new AnotherPlayer(scene, '[test player]')
+    let player = new Player(camera, scene, Physijs)
+    let testPlayer = new AnotherPlayer(scene, '[test player]')
 
     let raycaster = new THREE.Raycaster()
     iframeWindow.addEventListener('click', () => {
       let position = camera.getWorldPosition(new THREE.Vector3())
       let direction = camera.getWorldDirection(new THREE.Vector3())
 
-      // if (isSoundsEnable) {
-      //   weapon.sound.isPlaying && weapon.sound.stop()
-      //   weapon.sound.play()
-      // }
+      if (1) {
+        weapon.sound.isPlaying && weapon.sound.stop()
+        weapon.sound.play()
+      }
 
       raycaster.set(position, direction)
 
@@ -149,18 +151,149 @@ class Shooter extends Component {
     })
 
     /* network */
-    iframeWindow.pause = false
-    iframeWindow.networkPlayers = {}
-    iframeWindow.definedNetworkPlayers = {}
-    iframeWindow.myId = 0
+
+
+
+
+
+
+
+
+
+
+    let pause = false
+    let networkPlayers = {}
+    let definedNetworkPlayers = {}
+    let myId = 0
+    
+    let socketEndpoint = window.location.protocol == 'https:' ? 'wss://' : 'ws://'
+        socketEndpoint += window.location.host
+    
+    let ws = new WebSocket(socketEndpoint)
+    let send = ws.send.bind(ws)
+    send.isOpen = false
+    
+    document.querySelector('#chat').addEventListener('submit', e => {
+      e.preventDefault()
+      let value = e.target.lastElementChild.value
+    
+      if (value) send(value)
+      e.target.lastElementChild.value = ''
+    })
+    
+    ws.onerror = error => {
+      send.isOpen = false
+      addSystemMessageToChatWindow('[ws error]' + error.message)
+    }
+    
+    ws.onopen = () => {
+      send.isOpen = true
+    
+      addSystemMessageToChatWindow('[ws status]' + 'Соединение установлено.')
+    }
+    
+    ws.onmessage = event => {
+      const data = JSON.parse(event.data)
+    
+      if (~data.message.indexOf('__pos__')) {
+        const player = JSON.parse(data.message)
+    
+        return networkPlayers[player.__pos__] = player
+      }
+    
+      if (~data.message.indexOf('__id__')) {
+        return myId = JSON.parse(data.message).__id__
+      }
+    
+      if (~data.message.indexOf('__destroy__')) {
+        const idToDelete = JSON.parse(data.message).__destroy__
+    
+        delete networkPlayers[idToDelete]
+        scene.remove(definedNetworkPlayers[idToDelete])
+        delete definedNetworkPlayers[idToDelete]
+        return
+      }
+    
+      addDataToChatWindow(data)
+    }
+    
+    ws.onclose = (e) => {
+      send.isOpen = false
+    
+      send('bye')
+    
+      e.wasClean
+        ? console.log('[ws status]', 'Соединение закрыто чисто')
+        : console.log('[ws status]', 'Обрыв соединения')
+    
+      addSystemMessageToChatWindow('[ws status] Код: ' + e.code + ' причина: ' + e.reason)
+    }
+    
+    function addDataToChatWindow(data) {
+      let localTime = localTimeFormat(data)
+      let chatWindow = document.querySelector('.chat-messages-field')
+      let message = document.createElement('div')
+      let timeStamp = document.createElement('span')
+      let massageText = document.createElement('span')
+    
+      message.className = 'chat-message'
+      timeStamp.className = 'chat-timestamp'
+      massageText.className = 'chat-massage-text'
+    
+      timeStamp.innerHTML = localTime
+      massageText.innerHTML = data.message
+    
+      message.appendChild(timeStamp)
+      message.appendChild(massageText)
+      chatWindow.appendChild(message)
+    
+      chatWindow.scrollTop = chatWindow.scrollHeight
+    }
+    
+    function addSystemMessageToChatWindow(data) {
+      let chatWindow = document.querySelector('.chat-messages-field')
+      let message = document.createElement('div')
+      let timeStamp = document.createElement('span')
+    
+      message.className = 'chat-message'
+      timeStamp.className = 'chat-timestamp'
+      timeStamp.innerHTML = data
+    
+      message.appendChild(timeStamp)
+      chatWindow.appendChild(message)
+    
+      chatWindow.scrollTop = chatWindow.scrollHeight
+    }
+    
+    function localTimeFormat(data) {
+      const d = new Date(data.timestamp);
+      const localTime = `${d.getFullYear()}/${zr(d.getMonth()+1)}/${zr(d.getDate())} `+
+                        `${d.getHours()}:${zr(d.getMinutes())} `
+      return localTime;
+    }
+    
+    function zr(value) { return value >= 10 ? value : '0' + value }
+    
+
+
+
+
+
+
+
+
+
+
+
+
 
     function updateNetworkPlayers() {
-      for (let key in iframeWindow.networkPlayers) {
-        if (iframeWindow.networkPlayers[key].__pos__ != iframeWindow.myId) {
+      for (let key in networkPlayers) {
+        if (networkPlayers[key].__pos__ != myId) {
           setNetworkPlayerPosition(
             key,
-            iframeWindow.networkPlayers[key].position,
-            iframeWindow.networkPlayers[key].quaternion
+            networkPlayers[key].position,
+            networkPlayers[key].quaternion
           )
         }
       }
@@ -170,37 +303,37 @@ class Shooter extends Component {
     }
 
     function setNetworkPlayerPosition(__id__, pos, qua) {
-      if (iframeWindow.definedNetworkPlayers[__id__]) {
-        iframeWindow.definedNetworkPlayers[__id__].position.set(pos.x, pos.y, pos.z)
-        iframeWindow.definedNetworkPlayers[__id__].quaternion.set(qua._x, qua._y, qua._z, qua._w)
+      if (definedNetworkPlayers[__id__]) {
+        definedNetworkPlayers[__id__].position.set(pos.x, pos.y, pos.z)
+        definedNetworkPlayers[__id__].quaternion.set(qua._x, qua._y, qua._z, qua._w)
       } else {
-        // iframeWindow.definedNetworkPlayers[__id__] = new AnotherPlayer(scene, __id__)
+        definedNetworkPlayers[__id__] = new AnotherPlayer(scene, __id__)
       }
     }
 
-//     function sendOwnCoordinates() {
-//       if (!iframeWindow.send.isOpen || !iframeWindow.myId) { return }
-//
-//       iframeWindow.send(JSON.stringify({
-//         __pos__: iframeWindow.myId,
-//         position: iframeWindow.player.body.position,
-//         quaternion: iframeWindow.player.body.quaternion
-//       }))
-//     }
+    function sendOwnCoordinates() {
+      if (!send.isOpen || !myId) { return }
+
+      send(JSON.stringify({
+        __pos__: myId,
+        position: player.body.position,
+        quaternion: player.body.quaternion
+      }))
+    }
 
     iframeWindow.addEventListener('unload', () => {
-      iframeWindow.send(JSON.stringify({ __destroy__: iframeWindow.myId }))
-      iframeWindow.send('bye ' + iframeWindow.myId)
+      send(JSON.stringify({ __destroy__: myId }))
+      send('bye ' + myId)
     })
 
     /* action */
     const action = (time, delta) => {
-      // sendOwnCoordinates()
+      sendOwnCoordinates()
       updateNetworkPlayers()
 
-      // testPlayer.rotation.y += .02
+      testPlayer.rotation.y += .01
 
-      iframeWindow.player.control()
+      player.control()
     }
 
     const animate = (time, delta = clock.getDelta()) => {

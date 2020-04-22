@@ -1,6 +1,10 @@
 import * as THREE from 'three'
 
 export default (camera, listener) => {
+  const state = {
+    volume: 15
+  }
+
   let weapon = new THREE.Mesh(
     new THREE.BoxGeometry(.5, .5, 5),
     new THREE.MeshBasicMaterial({ color: 'black' })
@@ -8,9 +12,9 @@ export default (camera, listener) => {
 
   let sound = new THREE.Audio(listener)
   let audioLoader = new THREE.AudioLoader()
-  audioLoader.load(assets('sounds/shotgun-shot.ogg'), buffer => {
+  audioLoader.load(require('../../assets/sounds/shotgun-shot.ogg'), buffer => {
     sound.setBuffer(buffer)
-    sound.setVolume(config.sounds / 100)
+    sound.setVolume(state.volume / 100)
   })
 
   weapon.sound = sound

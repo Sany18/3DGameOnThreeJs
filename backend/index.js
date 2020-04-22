@@ -47,7 +47,7 @@ function runCommands(wss, message) {
   if (message == 'chat database clear') { clearChatFile() }
   if (~message.indexOf('__pos__')) { return broadcast(wss, message) }
 
-  // writeInChatArchive(message)
+  writeInChatArchive(message)
   broadcast(wss, message)
 }
 
