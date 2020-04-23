@@ -23,16 +23,13 @@ class Shooter extends Component {
     /* program */
     let scene = new THREE.Scene()
     let clock = new THREE.Clock()
-    let objects = []
-    let state = {
+    
+    let config = {
       camera: {
         angle: 75,
         far: 1000,
         near: .1
-      }
-    }
-
-    let config = {
+      },
       resolutionMultiplier: 1,
       antialias: false,
       gravity: 980,
@@ -49,8 +46,8 @@ class Shooter extends Component {
 
     /* camera */
     let camera = new THREE.PerspectiveCamera(
-      state.camera.angle, iframeWindow.innerWidth / iframeWindow.innerHeight,
-      state.camera.near, state.camera.far)
+      config.camera.angle, iframeWindow.innerWidth / iframeWindow.innerHeight,
+      config.camera.near, config.camera.far)
 
     let listener = new THREE.AudioListener()
     let music = new THREE.Audio(listener)

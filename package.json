@@ -9,7 +9,8 @@
     "start": "concurrently \"react-scripts start\" \"node ./backend/index\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "preinstall": "npx npm-force-resolutions"
   },
   "keywords": [
     "tree.js",
@@ -22,7 +23,8 @@
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.1.2",
     "concurrently": "^5.0.1",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.13.1",
+    "npm-force-resolutions": "0.0.3",
     "physijs-browserify": "0.0.2",
     "physijs-webpack": "^0.1.4",
     "postprocessing": "^6.9.0",
@@ -55,5 +57,8 @@
   },
   "devDependencies": {
     "worker-loader": "^2.0.0"
+  },
+  "resolutions": {
+    "react-dev-utils": "10.1.0"
   }
 }

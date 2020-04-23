@@ -9,7 +9,6 @@ const App = () => {
   return (
     <Switch>
       <Route exact path='/' component={Main} />
-      {/* <Route exact path='/' component={Shooter} /> */}
       <Route exact path='/synthwave' component={Synthwave} />
       <Route exact path='/x2' component={Shooter} />
     </Switch>

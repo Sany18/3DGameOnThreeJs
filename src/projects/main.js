@@ -32,15 +32,21 @@ class Main extends Component {
     })
   }
 
+  componentWillUnmount() {
+    document.removeEventListener('mousemove', this.mouseMove)
+  }
+
   renderCursorTail = () => {
     const cursorCircles = document.getElementsByClassName('cursors-circle')
-    const cursor = document.getElementsByClassName('cursors-circle-main')
+    const circles = document.getElementsByClassName('cursors-circle-main')
     const segLength = 30
     const segAmount = 5
     const segSize = 5
     const c = Array(segAmount).fill(0).map(_ => ({ x: 0, y: 0, angle: 0 }))
 
-    document.addEventListener('mousemove', e => {
+    document.addEventListener('mousemove', this.mouseMove)
+
+    this.mouseMove = e => {
       segment(0, e.clientX, e.clientY)
 
       for (let i = 0; i < segAmount - 1; ++i) {
@@ -56,12 +62,12 @@ class Main extends Component {
         c[i].y = yin - Math.sin(c[i].angle) * segLength
       }
 
-      cursor[0].style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
+      circles[0].style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
 
       for (let i = 0; i < segAmount - 1; i++) {
         cursorCircles[i].style.transform = `translate(${c[i].x}px, ${c[i].y}px) rotate(${c[i].angle}deg)`
       }
-    })
+    }
 
     return (
       <>{c.map((_, i) => (i
